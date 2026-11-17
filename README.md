@@ -37,7 +37,14 @@
 
 ## 설치하기
 
-- **claude.ai (웹, 데스크톱 앱)**: 설정에서 **코드 실행과 파일 만들기**를 켜고, [릴리스 페이지](https://github.com/akaz01/claude-teacher/releases/latest)에서 스킬 zip을 내려받아 압축을 풀지 말고 설정의 스킬 메뉴에서 하나씩 올립니다. 필요한 스킬만 골라 올려도 됩니다.
+- **claude.ai (웹, 데스크톱 앱)**: 아래 네 단계면 됩니다. 단계마다 그림이 있는 안내는 [설치와 업데이트](docs/install.md)에 있습니다.
+  1. 설정 → **기능** → **클라우드에서 코드 실행**을 켭니다.
+  2. [릴리스 페이지](https://github.com/akaz01/claude-teacher/releases/latest)의 **Assets** 목록에서 `lesson-plan.zip`, `worksheet.zip`처럼 **스킬 이름으로 된 zip**(8개)을 내려받습니다. 필요한 것만 골라도 됩니다. `teacher-kit-plugin.zip`과 `Source code`는 받지 않습니다.
+  3. 압축을 풀지 말고, 설정 → **Skills** → **+ 추가** → **Skill 업로드**에서 zip을 하나씩 올립니다.
+  4. 새 대화에서 `지도안: 초5 사회 국토의 위치 1차시`처럼 써서 스킬이 일하는지 확인합니다.
+
+  ![릴리스 페이지에서 받을 파일](docs/images/install-1-release.png)
+
 - **Claude Code (플러그인)**: `/plugin marketplace add akaz01/claude-teacher` 다음 `/plugin install teacher-kit@claude-teacher`를 입력합니다.
 
 처음에는 "프로필 설정해 줘"라고 말씀하셔서 교사 프로필을 만들어 두시면 편합니다. 자세한 순서와 업데이트 방법은 [설치와 업데이트](docs/install.md)를 보세요.
