@@ -1,0 +1,32 @@
+# 배포에 필요한 파일만 올린다 (skills/, shared/, tools/, .claude-plugin/, README.md)
+
+# 교사 참고자료 (학교 문서, 기출 문제지 등)
+refer/
+
+# 한글에서 확인한 생성 샘플
+samples/
+
+# 빌드 결과 (python tools/build.py 로 다시 만든다)
+dist/
+dist.tmp/
+
+# 파이썬 캐시, 테스트·커버리지 결과
+__pycache__/
+*.pyc
+.pytest_cache/
+.coverage
+
+# 운영체제 파일
+Thumbs.db
+desktop.ini
+.DS_Store
+
+# 스킬 평가 실행 결과 (evals/에 평가 정의만 올린다)
+evals-workspace/
+evals/results/
+
+# 사용자가 시험으로 받은 결과물·양식 (교과서 자료, 학교 양식이 들어 있음)
+test/
+
+# graft's local graph cache — regenerable, not committed (run `graft build`).
+/graft/

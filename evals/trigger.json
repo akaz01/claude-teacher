@@ -1,0 +1,629 @@
+[
+  {
+    "id": 1,
+    "query": "2학기 진도표 짜야 하는데 주당 3시간이고 1반은 월수금, 2반은 화목금이야. 추석 연휴랑 체육대회 날 빼고 시험 범위까지 계산해 줘",
+    "expected_skill": null
+  },
+  {
+    "id": 2,
+    "query": "교과서 목차 pdf 올릴게. 이걸로 중1 국어 1학기 교수학습 및 평가 운영 계획 진도 부분 채워 줘",
+    "expected_skill": null
+  },
+  {
+    "id": 3,
+    "query": "우리 반 다음 주 주간학습안내 만들어 줘. 3학년이고 시간표는 이거야",
+    "expected_skill": null
+  },
+  {
+    "id": 4,
+    "query": "고2 한국사 기말고사 출제해야 해. 객관식 20개 5지선다, 서술형 2개. 범위는 근대 개항기부터 일제강점기 초까지",
+    "expected_skill": "assessment-items"
+  },
+  {
+    "id": 5,
+    "query": "이 서술형 문항 채점기준이랑 이원목적분류표 좀 만들어 줘. 문항은 아래 붙일게",
+    "expected_skill": "assessment-items"
+  },
+  {
+    "id": 6,
+    "query": "중3 수학 이차함수 단원평가 10문제만 내 줘. 난이도 상중하 섞어서",
+    "expected_skill": "assessment-items"
+  },
+  {
+    "id": 7,
+    "query": "내일 5교시 초6 과학 '생물과 환경' 수업 ppt 좀 만들어 줘. 퀴즈도 넣고",
+    "expected_skill": "class-slides"
+  },
+  {
+    "id": 8,
+    "query": "이 지도안으로 수업용 슬라이드 만들어 줘. 발문은 발표자 노트에 넣어 주고",
+    "expected_skill": "class-slides"
+  },
+  {
+    "id": 9,
+    "query": "고등학교 문학 시간에 쓸 프레젠테이션, 고대비 칠판 느낌으로 15장 정도",
+    "expected_skill": "class-slides"
+  },
+  {
+    "id": 10,
+    "query": "오늘 학부모 상담한 거 메모야. 공식 상담일지로 정리해 줘: 10/14 4시 전화, 엄마, 애가 학원 때문에 숙제 못한다고...",
+    "expected_skill": null
+  },
+  {
+    "id": 11,
+    "query": "학부모가 성적 문제로 계속 민원 넣고 있어서 오늘 대화 내용을 시간 순으로 기록해 두고 싶어",
+    "expected_skill": null
+  },
+  {
+    "id": 12,
+    "query": "다음 주 상담주간인데 학생들한테 미리 받을 상담 사전 질문지 만들어 줘",
+    "expected_skill": null
+  },
+  {
+    "id": 13,
+    "query": "[9과05-02] 이거 무슨 성취기준이야? 해설도 같이",
+    "expected_skill": "lesson-plan"
+  },
+  {
+    "id": 14,
+    "query": "내년에 고2 되는 애들은 2015 개정이야 2022 개정이야?",
+    "expected_skill": "lesson-plan"
+  },
+  {
+    "id": 15,
+    "query": "중학교 사회 '인권과 헌법' 단원 성취기준 목록 뽑아 줘",
+    "expected_skill": "lesson-plan"
+  },
+  {
+    "id": 16,
+    "query": "이 학습지 우리 반 느린 학습자용으로 쉽게 하나, 잘하는 애들용 심화로 하나 만들어 줘",
+    "expected_skill": "worksheet"
+  },
+  {
+    "id": 17,
+    "query": "다문화 학생이 한국어가 아직 서툴러. 이 과학 활동지를 그 학생도 할 수 있게 바꿔 줄래?",
+    "expected_skill": "worksheet"
+  },
+  {
+    "id": 18,
+    "query": "특수교육대상 학생 통합학급 수업용으로 이 모둠활동 지원 버전 만들어 줘",
+    "expected_skill": "worksheet"
+  },
+  {
+    "id": 19,
+    "query": "다음 달 공개수업 지도안 써야 해. 중2 영어, 45분, 세안으로",
+    "expected_skill": "lesson-plan"
+  },
+  {
+    "id": 20,
+    "query": "초4 수학 분수 1차시 약안 지도안 만들어 줘",
+    "expected_skill": "lesson-plan"
+  },
+  {
+    "id": 21,
+    "query": "이 차시 교수학습과정안 도입-전개-정리로 짜 줘. 판서 계획도",
+    "expected_skill": "lesson-plan"
+  },
+  {
+    "id": 22,
+    "query": "오늘 교과협의회 녹음 텍스트야. 협의록 양식으로 정리해 줘",
+    "expected_skill": null
+  },
+  {
+    "id": 23,
+    "query": "학업성적관리위원회 회의록 초안 써 줘. 안건은 수행평가 비율 변경이랑 결시생 처리",
+    "expected_skill": null
+  },
+  {
+    "id": 24,
+    "query": "학년 협의회 메모 정리해서 결정 사항이랑 할 일 뽑아 줘",
+    "expected_skill": null
+  },
+  {
+    "id": 25,
+    "query": "학교폭력 예방 캠페인 운영 계획서 기안문 써 줘. 예산 50만원, 물품비랑 홍보비",
+    "expected_skill": null
+  },
+  {
+    "id": 26,
+    "query": "2학기 독서 동아리 운영 결과 보고서 공문 형식으로",
+    "expected_skill": null
+  },
+  {
+    "id": 27,
+    "query": "과학실 기자재 구입 품의 내부결재 본문 좀",
+    "expected_skill": null
+  },
+  {
+    "id": 28,
+    "query": "11월 현장체험학습 가정통신문 써 줘. 장소는 국립중앙박물관, 회신 기한 10/30",
+    "expected_skill": null
+  },
+  {
+    "id": 29,
+    "query": "이 작년 가정통신문 양식 그대로 써서 방과후학교 수강 신청 안내문 만들어 줘",
+    "expected_skill": null
+  },
+  {
+    "id": 30,
+    "query": "학부모 동의서 필요해. 수업 중 사진 촬영 및 학교 홈페이지 게시 동의",
+    "expected_skill": null
+  },
+  {
+    "id": 31,
+    "query": "이 엑셀에 학생 이름이랑 전화번호 있는데 AI에 넣어도 되게 가명 처리해 줘",
+    "expected_skill": [
+      "subject-record",
+      "activity-record",
+      "behavior-record"
+    ]
+  },
+  {
+    "id": 32,
+    "query": "이 문서 외부로 보내도 돼? 개인정보 남아 있는지 봐 줘",
+    "expected_skill": [
+      "subject-record",
+      "activity-record",
+      "behavior-record"
+    ]
+  },
+  {
+    "id": 33,
+    "query": "학생 명단 익명화해 줘. 학생A, 학생B 이런 식으로",
+    "expected_skill": [
+      "subject-record",
+      "activity-record",
+      "behavior-record"
+    ]
+  },
+  {
+    "id": 34,
+    "query": "수행평가 루브릭 만들어 줘. 모둠 발표, 평가요소 3개, 4단계 척도",
+    "expected_skill": "rubric"
+  },
+  {
+    "id": 35,
+    "query": "논술형 수행평가 채점 기준표랑 반별 채점 기록표 엑셀로",
+    "expected_skill": "rubric"
+  },
+  {
+    "id": 36,
+    "query": "학생들한테 나눠 줄 수행평가 체크리스트, 이 채점기준표 기준으로",
+    "expected_skill": null
+  },
+  {
+    "id": 37,
+    "query": "이 문장 공문체 개조식으로 바꿔 줘",
+    "expected_skill": null
+  },
+  {
+    "id": 38,
+    "query": "이 안내 문구 학부모용으로 좀 부드럽게 다듬어 줘",
+    "expected_skill": null
+  },
+  {
+    "id": 39,
+    "query": "날짜 표기 2026.10.16.(금) 식으로 통일해 줘. 문서 전체",
+    "expected_skill": null
+  },
+  {
+    "id": 40,
+    "query": "학생 독후감 30편인데 각각 잘한 점, 고칠 점 피드백 써 주고 공통 오류도 정리해 줘",
+    "expected_skill": null
+  },
+  {
+    "id": 41,
+    "query": "이 보고서에 첨삭 코멘트 달아 줘. 고1이야",
+    "expected_skill": null
+  },
+  {
+    "id": 42,
+    "query": "과제 평가 의견을 학부모용으로도 따로 써 줘",
+    "expected_skill": null
+  },
+  {
+    "id": 43,
+    "query": "고2 생명과학 세특 써 줘. 활동지랑 보고서 첨부할게, 1500바이트 이내",
+    "expected_skill": "subject-record"
+  },
+  {
+    "id": 44,
+    "query": "행특 문장 이거 기재요령에 걸리는 거 있는지 봐 줘",
+    "expected_skill": "behavior-record"
+  },
+  {
+    "id": 45,
+    "query": "동아리 창체 기록 초안 5명분, NEIS 바이트도 확인해 줘",
+    "expected_skill": "activity-record"
+  },
+  {
+    "id": 46,
+    "query": "처음 써 보는데 나는 중학교 2학년 담임이고 과학 가르쳐. 이거 설정해 줘",
+    "expected_skill": "lesson-plan"
+  },
+  {
+    "id": 47,
+    "query": "올해부터 고등학교로 옮겼어. 내 정보 바꿔 줘",
+    "expected_skill": "lesson-plan"
+  },
+  {
+    "id": 48,
+    "query": "새 학년도 준비로 프로필 다시 만들고 싶어",
+    "expected_skill": "lesson-plan"
+  },
+  {
+    "id": 49,
+    "query": "2022 개정 중1 사회 단원 백워드 설계 해 줘. 수행과제도",
+    "expected_skill": null
+  },
+  {
+    "id": 50,
+    "query": "개념기반 탐구 수업으로 이 단원 전체 설계하고 싶어. 핵심 질문부터",
+    "expected_skill": null
+  },
+  {
+    "id": 51,
+    "query": "GRASPS 수행과제 하나 설계해 줘. 고1 통합과학 기후 변화",
+    "expected_skill": null
+  },
+  {
+    "id": 52,
+    "query": "중1 사회 지도 읽기 빈칸 채우기 개념정리 학습지 만들어 줘. 정답지도",
+    "expected_skill": "worksheet"
+  },
+  {
+    "id": 53,
+    "query": "내일 쓸 활동지 한 장, 초3 국어 높임말",
+    "expected_skill": "worksheet"
+  },
+  {
+    "id": 54,
+    "query": "이 교과서 쪽 pdf로 복습 학습지 만들어 줘",
+    "expected_skill": "worksheet"
+  },
+  {
+    "id": 55,
+    "query": "엑셀에서 vlookup이 #N/A 뜨는데 왜 그래?",
+    "expected_skill": null
+  },
+  {
+    "id": 56,
+    "query": "우리 학교 와이파이 비밀번호 바꾸는 방법 알려 줘",
+    "expected_skill": null
+  },
+  {
+    "id": 57,
+    "query": "교원 성과급 등급 기준이 어떻게 돼?",
+    "expected_skill": null
+  },
+  {
+    "id": 58,
+    "query": "파이썬으로 리스트 정렬하는 법",
+    "expected_skill": null
+  },
+  {
+    "id": 59,
+    "query": "교사 연수 학점 몇 점 들어야 승급돼?",
+    "expected_skill": null
+  },
+  {
+    "id": 60,
+    "query": "이 영어 문장 번역해 줘: The mitochondria is the powerhouse of the cell.",
+    "expected_skill": null
+  },
+  {
+    "id": 61,
+    "query": "요즘 학생들 사이에서 유행하는 말 뭐가 있어?",
+    "expected_skill": null
+  },
+  {
+    "id": 62,
+    "query": "한글 파일 글꼴이 깨지는데 해결 방법",
+    "expected_skill": null
+  },
+  {
+    "id": 63,
+    "query": "방학 때 가족여행 일정 짜 줘",
+    "expected_skill": null
+  },
+  {
+    "id": 64,
+    "query": "ChatGPT랑 Claude 차이가 뭐야?",
+    "expected_skill": null
+  },
+  {
+    "id": 65,
+    "query": "행발 문장 좀 써 줘. 중2 담임이고 학생 관찰 메모 있어",
+    "expected_skill": "behavior-record"
+  },
+  {
+    "id": 66,
+    "query": "이 생기부 문장 글자 수 확인해 줘. 세특 두 줄짜리야",
+    "expected_skill": "subject-record"
+  },
+  {
+    "id": 67,
+    "query": "학생 관찰 기록에 이름이랑 번호가 있어. 개인정보 지워 줘",
+    "expected_skill": [
+      "subject-record",
+      "activity-record",
+      "behavior-record"
+    ]
+  },
+  {
+    "id": 68,
+    "query": "이 관찰 메모 가명 처리해 줘. 교내 문서용이야",
+    "expected_skill": [
+      "subject-record",
+      "activity-record",
+      "behavior-record"
+    ]
+  },
+  {
+    "id": 69,
+    "query": "고3 행특 종합의견 300자 안으로 써 줘. 담임이야",
+    "expected_skill": "behavior-record"
+  },
+  {
+    "id": 70,
+    "query": "NEIS 바이트 맞는지 이 세특 문장 확인해 줘",
+    "expected_skill": "subject-record"
+  },
+  {
+    "id": 71,
+    "query": "창체 기록 써야 하는데 동아리 담당이야. 학생 4명 메모 줄게",
+    "expected_skill": "activity-record"
+  },
+  {
+    "id": 72,
+    "query": "교과 세특 기재 예시 몇 개만 보여 줘. 2026 기준으로",
+    "expected_skill": "subject-record"
+  },
+  {
+    "id": 73,
+    "query": "학생부종합전형 면접 질문 예상 목록 만들어 줘",
+    "expected_skill": null
+  },
+  {
+    "id": 74,
+    "query": "학급 홈페이지에 올릴 체험학습 사진 소개글 써 줘",
+    "expected_skill": null
+  },
+  {
+    "id": 75,
+    "query": "전국연합학력평가 결과를 반별로 엑셀 정리해 줘",
+    "expected_skill": null
+  },
+  {
+    "id": 76,
+    "query": "학습지: 중1 과학 물질의 구성 1차시",
+    "expected_skill": "worksheet"
+  },
+  {
+    "id": 77,
+    "query": "PPT: 고1 통합사회 인권 보장 2차시 수업용",
+    "expected_skill": "class-slides"
+  },
+  {
+    "id": 78,
+    "query": "문항: 중2 수학 일차함수 형성평가 5문항",
+    "expected_skill": "assessment-items"
+  },
+  {
+    "id": 79,
+    "query": "수행평가: 고2 국어 토론 발표, 총점 20점",
+    "expected_skill": "rubric"
+  },
+  {
+    "id": 80,
+    "query": "지도안: 초5 사회 국토의 위치 1차시 약안",
+    "expected_skill": "lesson-plan"
+  },
+  {
+    "id": 81,
+    "query": "세특: 고1 통합과학, 메모 첨부할게",
+    "expected_skill": "subject-record"
+  },
+  {
+    "id": 82,
+    "query": "창체: 고2 자율활동 학급 회의 기록 정리해 줘",
+    "expected_skill": "activity-record"
+  },
+  {
+    "id": 83,
+    "query": "동아리: 과학탐구반 1년 활동 기록 써 줘",
+    "expected_skill": "activity-record"
+  },
+  {
+    "id": 84,
+    "query": "행특: 중3 담임, 관찰 메모 줄게",
+    "expected_skill": "behavior-record"
+  },
+  {
+    "id": 85,
+    "query": "행발: 초6 학생 한 해 누가기록 정리",
+    "expected_skill": "behavior-record"
+  },
+  {
+    "id": 86,
+    "query": "중1 과학 오늘 배운 내용 복습용 형성평가지 한 장 만들어 줘",
+    "expected_skill": "worksheet"
+  },
+  {
+    "id": 87,
+    "query": "형성평가 만들어 줘. 중3 과학 5문항, 정답이랑 문항정보표도",
+    "expected_skill": "assessment-items"
+  },
+  {
+    "id": 88,
+    "query": "형성평가 만들어 줘. 초5 사회, 한 장짜리로 수업 끝나기 전에 풀게",
+    "expected_skill": "worksheet"
+  },
+  {
+    "id": 89,
+    "query": "형성평가 문항 10개 만들어 줘. 정답이랑 해설 포함",
+    "expected_skill": "assessment-items"
+  },
+  {
+    "id": 90,
+    "query": "이 엑셀 가명 처리해 줘",
+    "expected_skill": [
+      "subject-record",
+      "activity-record",
+      "behavior-record"
+    ]
+  },
+  {
+    "id": 91,
+    "query": "이 문서 내보내도 돼?",
+    "expected_skill": [
+      "subject-record",
+      "activity-record",
+      "behavior-record"
+    ]
+  },
+  {
+    "id": 92,
+    "query": "자율: 중2 학급 자치회 활동 기록 5명 메모 줄게",
+    "expected_skill": "activity-record"
+  },
+  {
+    "id": 93,
+    "query": "자치: 고1 학급 자치 활동 특기사항 정리해 줘",
+    "expected_skill": "activity-record"
+  },
+  {
+    "id": 94,
+    "query": "자율자치: 초6 학급 임원 활동 기록 써 줘",
+    "expected_skill": "activity-record"
+  },
+  {
+    "id": 95,
+    "query": "진로: 고2 진로 탐색 활동 특기사항 초안",
+    "expected_skill": "activity-record"
+  },
+  {
+    "id": 96,
+    "query": "창체특기: 고1 동아리 활동 기록 3명분",
+    "expected_skill": "activity-record"
+  },
+  {
+    "id": 97,
+    "query": "행동특성: 중1 담임 관찰 메모 정리해서 써 줘",
+    "expected_skill": "behavior-record"
+  },
+  {
+    "id": 98,
+    "query": "종합의견: 고2 담임이야. 학생A 한 해 기록 줄게",
+    "expected_skill": "behavior-record"
+  },
+  {
+    "id": 99,
+    "query": "행종: 초5 담임, 누가기록으로 써 줘",
+    "expected_skill": "behavior-record"
+  },
+  {
+    "id": 100,
+    "query": "교과세특: 고2 화학 탐구 보고서 첨부할게",
+    "expected_skill": "subject-record"
+  },
+  {
+    "id": 101,
+    "query": "과세특: 중3 수학 수행평가 활동 메모야",
+    "expected_skill": "subject-record"
+  },
+  {
+    "id": 102,
+    "query": "과목세특: 고1 영어 발표 활동 기록 초안",
+    "expected_skill": "subject-record"
+  },
+  {
+    "id": 103,
+    "query": "세부능력: 고3 물리 실험 보고서로 써 줘",
+    "expected_skill": "subject-record"
+  },
+  {
+    "id": 104,
+    "query": "교과발달: 초4 사회 성취수준 및 특기사항 초안",
+    "expected_skill": "subject-record"
+  },
+  {
+    "id": 105,
+    "query": "학생부: 고1 통합과학 세특 초안 써 줘. 실험 보고서 메모 첨부할게",
+    "expected_skill": "subject-record"
+  },
+  {
+    "id": 106,
+    "query": "학생부: 중3 담임인데 행특 종합의견 써야 해",
+    "expected_skill": "behavior-record"
+  },
+  {
+    "id": 107,
+    "query": "학생부: 고2 동아리 창체 특기사항 정리해 줘",
+    "expected_skill": "activity-record"
+  },
+  {
+    "id": 108,
+    "query": "학생부: 학생A 기록 초안 좀 부탁해",
+    "expected_skill": [
+      "subject-record",
+      "activity-record",
+      "behavior-record"
+    ]
+  },
+  {
+    "id": 109,
+    "query": "세특 스킬로 학생A 활동 메모 정리해 줘",
+    "expected_skill": "subject-record"
+  },
+  {
+    "id": 110,
+    "query": "창체 스킬 써서 동아리 기록 정리해 줘",
+    "expected_skill": "activity-record"
+  },
+  {
+    "id": 111,
+    "query": "행특 스킬로 학생A 종합의견 초안 써 줘",
+    "expected_skill": "behavior-record"
+  },
+  {
+    "id": 112,
+    "query": "PPT 스킬로 중2 과학 수업 슬라이드 만들어 줘",
+    "expected_skill": "class-slides"
+  },
+  {
+    "id": 113,
+    "query": "학습지 스킬로 초4 국어 한 장 만들어 줘",
+    "expected_skill": "worksheet"
+  },
+  {
+    "id": 114,
+    "query": "문항 스킬로 중1 수학 단원평가 5문항 내 줘",
+    "expected_skill": "assessment-items"
+  },
+  {
+    "id": 115,
+    "query": "지도안 스킬로 고1 한국사 1차시 짜 줘",
+    "expected_skill": "lesson-plan"
+  },
+  {
+    "id": 116,
+    "query": "수행평가 스킬로 고3 영어 발표 채점기준표 만들어 줘",
+    "expected_skill": "rubric"
+  },
+  {
+    "id": 117,
+    "query": "피피티: 초4 국어 낱말 뜻 알기 1차시",
+    "expected_skill": "class-slides"
+  },
+  {
+    "id": 118,
+    "query": "슬라이드: 중3 사회 민주주의 2차시 수업용",
+    "expected_skill": "class-slides"
+  },
+  {
+    "id": 119,
+    "query": "활동지: 초2 통합 가을 관찰 한 장",
+    "expected_skill": "worksheet"
+  }
+]

@@ -1,0 +1,31 @@
+name: test
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, ubuntu-latest]
+        python-version: ["3.11", "3.14"]   # claude.ai 샌드박스(낮은 쪽)와 개발 환경(높은 쪽)
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+          cache-dependency-path: requirements-dev.txt
+      - run: python -m pip install -r requirements-dev.txt
+      # 평소 실행(pytest.ini)은 빠르게 두고, 커버리지는 CI에서만 잰다. 현재 약 98%, 몇 점 낮게 걸어 둔다
+      - name: 테스트
+        run: python -m pytest -q --cov=shared/scripts --cov=skills --cov=tools --cov-fail-under=93
+      - name: 빌드 검사
+        run: python tools/build.py --check

@@ -1,0 +1,19 @@
+{
+  "name": "claude-teacher",
+  "description": "초·중·고 교사를 위한 수업·평가·학교생활기록부 도우미 스킬 모음",
+  "owner": {
+    "name": "AkazHoon"
+  },
+  "plugins": [
+    {
+      "name": "teacher-kit",
+      "description": "수업지도안, 학습지, 수업 PPT, 수행평가 채점기준표, 시험 문항, 세특·창체·행특 초안",
+      "source": {
+        "source": "github",
+        "repo": "akaz01/claude-teacher",
+        "ref": "plugin"
+      },
+      "category": "education"
+    }
+  ]
+}

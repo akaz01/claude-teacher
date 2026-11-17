@@ -1,0 +1,74 @@
+name: release
+
+# 버전 태그(예: v0.4.0)를 올리면 실행된다.
+# 1) 태그와 plugin.json 버전이 같은지 보고, 시험과 빌드를 돌린다
+# 2) claude.ai용 스킬 zip 8개와 플러그인 zip을 GitHub 릴리스에 올린다
+# 3) 빌드된 플러그인을 plugin 가지에 새 커밋으로 올린다
+#    (.claude-plugin/marketplace.json이 이 가지를 가리킨다. 기록을 지우지 않고 쌓는다)
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+          cache: pip
+          cache-dependency-path: requirements-dev.txt
+      - run: python -m pip install -r requirements-dev.txt
+
+      - name: 태그와 plugin.json 버전이 같은지 확인
+        run: |
+          version=$(python -c "import json; print(json.load(open('.claude-plugin/plugin.json', encoding='utf-8'))['version'])")
+          if [ "v${version}" != "${GITHUB_REF_NAME}" ]; then
+            echo "태그(${GITHUB_REF_NAME})와 plugin.json 버전(v${version})이 다릅니다." >&2
+            exit 1
+          fi
+
+      - name: 시험
+        run: python -m pytest -q
+
+      - name: 빌드
+        run: python tools/build.py
+
+      - name: 플러그인 zip 만들기
+        run: |
+          cd dist/plugin
+          zip -r -X "../teacher-kit-plugin.zip" teacher-kit
+
+      - name: 릴리스 올리기
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "${GITHUB_REF_NAME}" \
+            dist/claude-ai/*.zip dist/teacher-kit-plugin.zip \
+            --title "teacher-kit ${GITHUB_REF_NAME}" \
+            --notes "claude.ai: 필요한 스킬 zip을 내려받아 압축을 풀지 말고 설정의 스킬 메뉴에 올리세요. Claude Code: /plugin marketplace update claude-teacher 로 새 판을 받습니다. 자세한 방법은 docs/install.md를 보세요."
+
+      - name: plugin 가지에 빌드된 플러그인 올리기
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          work=$(mktemp -d)
+          if git ls-remote --exit-code --heads origin plugin >/dev/null; then
+            git worktree add "$work" origin/plugin
+            git -C "$work" checkout -B plugin
+          else
+            git worktree add --detach "$work"
+            git -C "$work" checkout --orphan plugin
+          fi
+          # 이전 판 파일을 지우고 새 빌드로 바꾼다 (.git은 남긴다)
+          find "$work" -mindepth 1 -maxdepth 1 ! -name .git -exec rm -rf {} +
+          cp -r dist/plugin/teacher-kit/. "$work"
+          git -C "$work" add -A
+          git -C "$work" commit -q -m "build: teacher-kit ${GITHUB_REF_NAME}" || echo "바뀐 내용 없음"
+          git -C "$work" push origin plugin
