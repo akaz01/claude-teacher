@@ -1,0 +1,12 @@
+{
+  "name": "teacher-kit",
+  "version": "0.4.0",
+  "description": "초·중·고 교사를 위한 수업·평가·학교생활기록부 도우미 스킬 모음",
+  "author": {
+    "name": "AkazHoon",
+    "email": "akazhoon@gmail.com"
+  },
+  "repository": "https://github.com/akaz01/claude-teacher",
+  "license": "CC-BY-NC-4.0",
+  "keywords": ["education", "teacher", "korea", "lesson-plan", "student-record"]
+}
