@@ -1,15 +1,19 @@
-# teacher-kit: 교사용 Claude 스킬 모음
+<p align="center">
+  <img src="docs/images/banner.svg" alt="Claude-Teacher: 대한민국 교사들을 위해 만든 Claude 스킬 모음" width="100%">
+</p>
+
+<div align="center">
 
 [![release](https://img.shields.io/github/v/release/akaz01/claude-teacher?label=release&color=2ea44f)](https://github.com/akaz01/claude-teacher/releases/latest)
 [![tests](https://github.com/akaz01/claude-teacher/actions/workflows/test.yml/badge.svg)](https://github.com/akaz01/claude-teacher/actions/workflows/test.yml)
 [![license](https://img.shields.io/badge/license-CC%20BY--NC%204.0-lightgrey)](LICENSE)
 ![skills](https://img.shields.io/badge/skills-8-blue)
 ![output](https://img.shields.io/badge/output-hwpx%20%C2%B7%20pptx-1f6feb)
-![claude.ai](https://img.shields.io/badge/claude.ai-skills-d97757)
-![Claude Code](https://img.shields.io/badge/Claude%20Code-plugin-d97757)
-![python](https://img.shields.io/badge/python-3.11%2B-3776AB?logo=python&logoColor=white)
+![works with](https://img.shields.io/badge/%EC%82%AC%EC%9A%A9-claude.ai%20%C2%B7%20Claude%20Code-d97757)
 
-> 스킬 8개 | 수업 · 평가 · 학교생활기록부 | 한글(hwpx) · 파워포인트 결과물 | 2022 개정 성취기준 4,451개 | claude.ai · Claude Code
+**스킬 8개** | 수업 · 평가 · 학생부 | 한글(hwpx) · PPT | 성취기준 4,451개 | claude.ai · Claude Code
+
+</div>
 
 ---
 
@@ -28,7 +32,7 @@
 
 **지도안, 학습지, 수업 PPT, 시험지, 학생부 초안을 학교 양식에 바로 쓰도록 만듭니다.**
 
-초·중·고 교사의 수업·평가·학교생활기록부 업무를 돕는 Claude 스킬 8개입니다. 결과물은 학교에서 바로 쓰도록 **한글(hwpx)**과 파워포인트 파일로 만들고, 학교 엑셀 양식을 주시면 그 파일에 채웁니다.
+초·중·고 교사의 수업·평가·학교생활기록부 업무를 돕는 Claude 스킬 8개입니다. 결과물은 학교에서 바로 쓰도록 <b>한글(hwpx)</b>과 파워포인트 파일로 만들고, 학교 엑셀 양식을 주시면 그 파일에 채웁니다.
 
 **claude.ai(웹, 데스크톱 앱)와 Claude Code에서 쓸 수 있습니다.**
 
