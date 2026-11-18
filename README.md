@@ -15,7 +15,7 @@
 
 <div align="center">
 
-**[설치하기](#설치하기)** | **[업데이트 소식](#업데이트-소식)** | **[이렇게 쓰세요](#이렇게-쓰세요)** | **[스킬 목록](#스킬-목록)** | **[문의와 오류 제보](#문의와-오류-제보)**
+**[설치하기](#설치하기)** | **[최신 판으로 업데이트](#최신-판으로-업데이트하기)** | **[업데이트 소식](#업데이트-소식)** | **[이렇게 쓰세요](#이렇게-쓰세요)** | **[스킬 목록](#스킬-목록)** | **[문의](#문의와-오류-제보)**
 
 </div>
 
@@ -27,6 +27,11 @@
 
 **claude.ai(웹, 데스크톱 앱)와 Claude Code에서 쓸 수 있습니다.**
 
+| 처음이신가요? | 이미 쓰고 계신가요? | 쓰는 법이 궁금하신가요? | 막히셨나요? |
+|:---:|:---:|:---:|:---:|
+| **[그림으로 보는 설치 안내](docs/install.md)** | **[최신 판으로 업데이트하기](#최신-판으로-업데이트하기)** | **[사용법](docs/usage.md)** | **[자주 묻는 질문](docs/faq.md)** |
+| claude.ai · Claude Code 설치를 단계마다 그림으로 | 새 판 zip 교체, 플러그인 업데이트 명령 | 스킬 8개 부르는 말과 요청 예시 | 파일이 안 만들어질 때, 스킬이 안 불릴 때 |
+
 ---
 
 ## 이런 원칙으로 만들었습니다
@@ -36,6 +41,8 @@
 - **핵심 수치는 묻습니다.** 정기시험은 문항 수·배점을 먼저 여쭙고, 형성평가·단원평가는 기본 구성으로 초안을 만든 뒤 바꿀 값을 여쭙니다. 주당 시수 같은 다른 숫자는 학교급 기본값을 예시로 보여 드리고 선생님께 확인받습니다.
 - **학생 개인정보를 보호합니다.** 학교생활기록부 자료에 학생 실명이나 연락처가 보이면 작업을 멈추고 지운 뒤 다시 올려 달라고 안내합니다. 학생은 `학생A`, `학생B`처럼 가명으로 다룹니다. 출석번호(`1번`)는 반 정보와 겹치면 누구인지 알 수 있어 가명으로 쓰지 않습니다.
 - **성취기준 데이터베이스**: 2022 개정 교육과정 성취기준 4,451개(해설 포함)가 들어 있어, 성취기준을 주지 않으셔도 찾아서 제안합니다.
+
+---
 
 ## 스킬 목록
 
@@ -62,22 +69,128 @@
 | `activity-record` | 창의적 체험활동(자율·자치·진로는 담임교사, 동아리는 동아리 담당교사) 특기사항 초안을 쓰고 점검합니다. 봉사활동은 쓰지 않습니다. "창체:"로 부릅니다 | 대화 |
 | `behavior-record` | 담임교사의 한 해 관찰 기록으로 행동특성 및 종합의견 초안을 쓰고 점검합니다. "행특:"으로 부릅니다 | 대화 |
 
+---
+
 ## 설치하기
 
-- **claude.ai (웹, 데스크톱 앱)**: 아래 네 단계면 됩니다. 단계마다 그림이 있는 안내는 [설치와 업데이트](docs/install.md)에 있습니다.
-  1. 설정 → **기능** → **클라우드에서 코드 실행**을 켭니다.
-  2. [릴리스 페이지](https://github.com/akaz01/claude-teacher/releases/latest)의 **Assets** 목록에서 `lesson-plan.zip`, `worksheet.zip`처럼 **스킬 이름으로 된 zip**(8개)을 내려받습니다. 필요한 것만 골라도 됩니다. `teacher-kit-plugin.zip`과 `Source code`는 받지 않습니다.
-  3. 압축을 풀지 말고, 설정 → **Skills** → **+ 추가** → **Skill 업로드**에서 zip을 하나씩 올립니다.
-  4. 새 대화에서 `지도안: 초5 사회 국토의 위치 1차시`처럼 써서 스킬이 일하는지 확인합니다.
+> **그림과 함께 보는 자세한 안내: [설치와 업데이트](docs/install.md)** — 화면마다 어디를 누르는지 그림으로 보여 드립니다.
 
-  ![릴리스 페이지에서 받을 파일](docs/images/install-1-release.png)
+쓰시는 곳에 맞게 하나만 고르세요.
 
-- **Claude Code (플러그인)**: 플러그인 `teacher-kit`에는 스킬 8개와 한글(hwpx)·파워포인트 파일을 만드는 도구가 모두 들어 있습니다. 골라 설치하는 방식이 아닙니다.
-  - 설치: `/plugin marketplace add akaz01/claude-teacher` 다음 `/plugin install teacher-kit@claude-teacher`를 입력합니다.
-  - 업데이트: Claude Code 안에서 `/plugin marketplace update claude-teacher`를 입력합니다.
-  - 지우기: `/plugin uninstall teacher-kit@claude-teacher`
+| 쓰는 곳 | 방법 | 설치하는 것 |
+|---|---|---|
+| **claude.ai** (웹, 데스크톱 앱) | 스킬 zip을 올립니다 | 필요한 스킬만 골라서 |
+| **Claude Code** (터미널) | 플러그인 명령 두 줄 | 스킬 8개와 문서 만드는 도구 모두 |
 
-처음에는 "프로필 설정해 줘"라고 말씀하셔서 교사 프로필을 만들어 두시면 편합니다. 자세한 순서와 업데이트 방법은 [설치와 업데이트](docs/install.md)를 보세요.
+### claude.ai (웹, 데스크톱 앱)
+
+#### 1단계: 코드 실행 켜기
+
+[그림으로 보기 →](docs/install.md#1-1-클라우드에서-코드-실행-켜기)
+
+설정 → **기능** → **클라우드에서 코드 실행**을 켭니다. 한글(hwpx)·파워포인트 파일을 만들려면 꼭 켜야 합니다.
+
+#### 2단계: 스킬 zip 내려받기
+
+[그림으로 보기 →](docs/install.md#1-2-릴리스-페이지에서-스킬-zip-내려받기)
+
+[릴리스 페이지](https://github.com/akaz01/claude-teacher/releases/latest)의 **Assets** 목록에서 **스킬 이름으로 된 zip**을 내려받습니다. 필요한 것만 골라도 됩니다.
+
+```text
+# 수업
+lesson-plan.zip      class-slides.zip      worksheet.zip
+
+# 평가
+rubric.zip           assessment-items.zip
+
+# 학교생활기록부
+subject-record.zip   activity-record.zip   behavior-record.zip
+```
+
+> **주의:** `teacher-kit-plugin.zip`과 `Source code`는 받지 않습니다. claude.ai에 올리면 오류가 납니다.
+
+![릴리스 페이지에서 받을 파일](docs/images/install-1-release.png)
+
+#### 3단계: 스킬 올리기
+
+[그림으로 보기 →](docs/install.md#1-3-skills-메뉴에서-올리기)
+
+설정 → **Skills** → **+ 추가** → **Skill 업로드**에서 zip을 하나씩 올립니다.
+
+> **주의:** zip의 **압축을 풀지 말고** 그대로 올립니다.
+
+#### 4단계: 확인하기
+
+[그림으로 보기 →](docs/install.md#1-4-잘-설치됐는지-확인)
+
+새 대화에서 아래처럼 써서 스킬이 일하는지 확인합니다.
+
+```text
+지도안: 초5 사회 국토의 위치 1차시
+```
+
+### Claude Code (플러그인)
+
+플러그인 `teacher-kit`에는 스킬 8개와 한글(hwpx)·파워포인트 파일을 만드는 도구가 모두 들어 있습니다. 골라 설치하는 방식이 아닙니다.
+
+```text
+# 마켓플레이스 추가
+/plugin marketplace add akaz01/claude-teacher
+
+# 플러그인 설치
+/plugin install teacher-kit@claude-teacher
+```
+
+업데이트는 아래 [최신 판으로 업데이트하기](#최신-판으로-업데이트하기)를 보세요. 그림 안내: [설치와 업데이트 2장](docs/install.md#2-claude-code-플러그인)
+
+### 처음 쓰실 때
+
+```text
+프로필 설정해 줘
+```
+
+교사 프로필(학교급, 교과, 학년)을 만들어 두시면 매번 묻지 않습니다. 자세한 순서와 그림은 [설치와 업데이트](docs/install.md)를 보세요.
+
+---
+
+## 최신 판으로 업데이트하기
+
+> 새 판이 나오면 [업데이트 소식](#업데이트-소식)에 무엇이 바뀌었는지, 어떤 스킬을 바꾸면 되는지 적어 둡니다. 지금 최신 판: [![release](https://img.shields.io/github/v/release/akaz01/claude-teacher?label=&color=2ea44f)](https://github.com/akaz01/claude-teacher/releases/latest)
+
+### claude.ai (웹, 데스크톱 앱)
+
+#### 1단계: 새 판 zip 내려받기
+
+[릴리스 페이지](https://github.com/akaz01/claude-teacher/releases/latest)의 **Assets**에서 바뀐 스킬의 zip을 받습니다. 어떤 스킬이 바뀌었는지는 [업데이트 소식](#업데이트-소식)에 있습니다.
+
+#### 2단계: 같은 이름 스킬에 올려 교체하기
+
+설정 → **Skills** → 바꿀 스킬 이름(예: `assessment-items`) 누르기 → 오른쪽 위 **⋯** → **교체** → **같은 이름**의 새 zip 올리기
+
+![Skills > 스킬 이름 > ⋯ > 교체](docs/images/install-4-replace.png)
+
+> **주의:** 새로 **추가**하지 말고 **교체**합니다. 추가하면 같은 이름 스킬이 두 개가 되어 어느 것이 불릴지 알 수 없습니다. 이전 판은 버전 기록에 남습니다.
+
+[그림으로 보기 →](docs/install.md#1-5-새-판이-나왔을-때-업데이트)
+
+### Claude Code (플러그인)
+
+터미널에서 아래 두 줄을 입력하고 Claude Code를 다시 시작합니다.
+
+```bash
+# 1. 마켓플레이스 목록 새로 고침
+claude plugin marketplace update claude-teacher
+
+# 2. 플러그인을 최신 판으로 업데이트 (다시 시작하면 적용)
+claude plugin update teacher-kit@claude-teacher
+```
+
+```bash
+# 설치된 판 확인
+claude plugin list
+```
+
+---
 
 ## 업데이트 소식
 
@@ -94,7 +207,23 @@
   - 배점 앞은 보통 빈칸이라 한글에서 바로 고칠 수 있습니다.
 - **자료 표와 그림**: 연표·통계표를 칸 있는 표로 넣고, 그림 두 장을 나란히 놓습니다. 빈칸은 실선으로 표시합니다.
 - 함께 바뀐 스킬: 한글 문서를 만드는 공용 도구가 바뀌어 `lesson-plan`, `worksheet`, `rubric`도 새 판입니다(표 칸 넘침 알림, 수식 폭 보정).
-- 업데이트하는 법: claude.ai는 [릴리스 페이지](https://github.com/akaz01/claude-teacher/releases/latest)에서 `assessment-items.zip`, `lesson-plan.zip`, `worksheet.zip`, `rubric.zip`을 받아 같은 이름 스킬마다 **업로드 및 교체**합니다. Claude Code는 `/plugin marketplace update claude-teacher`를 입력합니다.
+
+#### 0.5.0으로 업데이트하는 법
+
+**claude.ai:** [릴리스 페이지](https://github.com/akaz01/claude-teacher/releases/latest)에서 아래 zip을 받아, 설정 → **Skills**에서 같은 이름 스킬마다 **⋯ → 교체**로 올립니다.
+
+```text
+assessment-items.zip   lesson-plan.zip   worksheet.zip   rubric.zip
+```
+
+**Claude Code:** 터미널에서 입력하고 다시 시작합니다.
+
+```bash
+claude plugin marketplace update claude-teacher
+claude plugin update teacher-kit@claude-teacher
+```
+
+---
 
 ## 이렇게 쓰세요
 
@@ -116,21 +245,29 @@
 
 스킬마다 부르는 말, 요청 예시, 함께 주면 좋은 자료, 주의할 점은 [사용법](docs/usage.md)에 있습니다. 학교 양식을 쓰는 법도 거기에 있습니다.
 
+---
+
 ## 문서
 
 - [설치와 업데이트](docs/install.md): claude.ai와 Claude Code 설치, 새 판 올리기, 교사 프로필 만들기
 - [사용법](docs/usage.md): 어떤 스킬을 쓸지, 스킬 8개 사용법, 학교 양식 쓰는 법
 - [자주 묻는 질문](docs/faq.md): 파일이 안 만들어질 때, 스킬이 안 불릴 때, 개인정보로 멈췄을 때 등
 
+---
+
 ## 문의와 오류 제보
 
 사용 문의, 버그나 오류 제보는 **akazhoon@gmail.com**으로 보내 주세요. 어떤 스킬에서 어떤 요청을 했는지, 어떤 결과가 나왔는지 적어 주시면 빨리 고칠 수 있습니다. 학생 개인정보가 든 자료나 화면은 보내지 마세요.
+
+---
 
 ## 꼭 확인해 주세요
 
 - 결과물은 **초안**입니다. 성취기준, 기재요령, 학업성적관리규정은 해마다 바뀔 수 있으니 소속 학교와 교육청 지침을 확인해 주세요.
 - 학생 정보는 아래 "학생 자료를 올리기 전에"대로 지운 뒤 올리고, 소속 교육청의 생성형 AI 활용 지침을 따라 주세요.
 - 정기시험 문항은 출제 보안에 유의해 주세요.
+
+---
 
 ## 학생 자료를 올리기 전에
 
@@ -145,6 +282,8 @@
 - **대화창에 쓰는 글:** 처음부터 `학생A`, `학생B`로 씁니다. 출석번호 대신 임의 기호를 씁니다.
 - **겹치는 단서:** 이름을 지워도 학년·반과 질병, 가족 사항, 그 학교에 한 명뿐인 경험이 겹치면 누구인지 알 수 있습니다. 필요 없는 단서는 함께 지웁니다.
 - **대조표:** "학생A = 누구"라는 표는 선생님 컴퓨터에만 두고 올리지 않습니다. 결과 문장을 나이스에 옮길 때 이 표로 맞춥니다.
+
+---
 
 ## 개발자용
 
@@ -163,6 +302,8 @@ samples/hwpx-check/         한글에서 열어 확인한 생성 예시
 - GitHub에 올리면 GitHub Actions가 Windows와 Ubuntu에서 테스트와 빌드 검사(`python tools/build.py --check`)를 돌립니다.
 - 한글 생성기(`make_hwpx.py`)와 양식 채우기 도구(`fill_hwpx.py`, 시험지 양식은 `fill_exam.py`)는 표준 라이브러리만 씁니다. 엑셀 양식 채우기 도구(`fill_xlsx.py`)도 표준 라이브러리만 쓰고, 시험에서만 `openpyxl`을 씁니다. PPT는 `python-pptx`가 필요합니다.
 
+---
+
 ## 라이선스와 문의
 
 Copyright (c) 2026 AkazHoon
@@ -173,6 +314,8 @@ teacher-kit은 [크리에이티브 커먼즈 저작자표시-비영리 4.0 국�
 - **허락이 필요한 것:** 판매, 유료 강의·서비스에 포함하기 같은 영리 목적 이용
 
 저작권, 영리 이용 허락, 사용 문의, 버그나 오류 제보는 **akazhoon@gmail.com**으로 보내 주세요.
+
+---
 
 ## 출처
 
