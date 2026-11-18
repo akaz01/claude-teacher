@@ -15,7 +15,12 @@
 
 <div align="center">
 
-**[설치하기](#설치하기)** | **[최신 판으로 업데이트](#최신-판으로-업데이트하기)** | **[업데이트 소식](#업데이트-소식)** | **[이렇게 쓰세요](#이렇게-쓰세요)** | **[스킬 목록](#스킬-목록)** | **[문의](#문의와-오류-제보)**
+<a href="#설치하기"><img alt="설치하기" src="https://img.shields.io/badge/%EC%84%A4%EC%B9%98%ED%95%98%EA%B8%B0-1f6feb?style=for-the-badge"></a>
+<a href="#최신-판으로-업데이트하기"><img alt="최신 판으로 업데이트" src="https://img.shields.io/badge/%EC%B5%9C%EC%8B%A0%20%ED%8C%90%EC%9C%BC%EB%A1%9C%20%EC%97%85%EB%8D%B0%EC%9D%B4%ED%8A%B8-2ea44f?style=for-the-badge"></a>
+<a href="#이렇게-쓰세요"><img alt="이렇게 쓰세요" src="https://img.shields.io/badge/%EC%9D%B4%EB%A0%87%EA%B2%8C%20%EC%93%B0%EC%84%B8%EC%9A%94-8250df?style=for-the-badge"></a>
+<a href="#스킬-목록"><img alt="스킬 목록" src="https://img.shields.io/badge/%EC%8A%A4%ED%82%AC%20%EB%AA%A9%EB%A1%9D-0a7ea4?style=for-the-badge"></a>
+<a href="#업데이트-소식"><img alt="업데이트 소식" src="https://img.shields.io/badge/%EC%97%85%EB%8D%B0%EC%9D%B4%ED%8A%B8%20%EC%86%8C%EC%8B%9D-d97757?style=for-the-badge"></a>
+<a href="#문의와-오류-제보"><img alt="문의" src="https://img.shields.io/badge/%EB%AC%B8%EC%9D%98-6e7781?style=for-the-badge"></a>
 
 </div>
 
