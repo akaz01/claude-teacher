@@ -12,13 +12,20 @@ from make_hwpx_text import _clean
 
 PASSAGE = "passage"
 CHOICE_KINDS = (SHORT_TABLE, COMBO_TABLE, PARAGRAPHS)
-COMMON_KEYS = {"type", "stem", "points", "box", "bogi", "layout"}
+COMMON_KEYS = {"type", "stem", "points", "box", "bogi", "layout", "dialogue", "dialogue_layout", "picture", "table"}
+DIALOGUE_LAYOUTS = ("row", "column")
+SPEAKER_KEYS = {"who", "text", "figure"}
+PICTURE_KEYS = {"file", "width_mm", "caption"}
+MAX_SPEAKERS = 4
 ITEM_KEYS = {SHORT_TABLE: COMMON_KEYS | {"choices", "answer"}, COMBO_TABLE: COMMON_KEYS | {"choices", "answer"},
              PARAGRAPHS: COMMON_KEYS | {"choices", "answer"}, GRID_TABLE: COMMON_KEYS | {"head", "rows", "answer"},
              WRITTEN: {"type", "stem", "points"}, PASSAGE: {"type", "count", "lead", "paragraphs"}}
 SPEC_KEYS = {"fills", "items"}
-PICTURE_GUIDE = ("그림은 넣을 수 없음. box에 [그림: 무엇을 나타내는 그림]처럼 자리를 적고, "
-                 "결과 파일을 한글에서 열어 그 자리에 그림을 넣어 주세요")
+PICTURE_GUIDE = ('그림은 "picture": {"file": "그림.png"}로 넣고(두 장은 목록), 대화 장면은 "dialogue", 칸 있는 표는 "table"로 넣어 주세요. '
+                 "서답형(written)과 지문(passage)에는 넣을 수 없습니다")
+TABLE_KEYS = {"head", "rows", "caption", "widths", "align"}
+MAX_TABLE_COLS = 8
+MAX_TABLE_ROWS = 30
 LAYOUT = re.compile(r"\d+\s*[x×X]\s*\d+")
 
 
@@ -49,8 +56,81 @@ def _check_common(item: dict, where: str) -> None:
         _texts(item["box"], where, "box")
     if "bogi" in item:
         _texts(item["bogi"], where, "bogi")
+    if "dialogue" in item:
+        _check_dialogue(item["dialogue"], where)
+    if "dialogue_layout" in item and ("dialogue" not in item or item["dialogue_layout"] not in DIALOGUE_LAYOUTS):
+        raise FillError(f'{where}: dialogue_layout은 dialogue와 함께 "row"(머리 위 말풍선)나 "column"(옆 말풍선)으로 적어 주세요')
+    if "picture" in item:
+        _check_pictures(item["picture"], where)
+    if "table" in item:
+        _check_table(item["table"], where)
     if "layout" in item and not (isinstance(item["layout"], str) and LAYOUT.fullmatch(item["layout"].strip())):
         raise FillError(f'{where}: layout은 선지 표의 행x칸이어야 함 (예: "5x1", "2x3", "1x5")')
+
+
+def _check_dialogue(value: object, where: str) -> None:
+    if not isinstance(value, list) or not 1 <= len(value) <= MAX_SPEAKERS:
+        raise FillError(f"{where}: dialogue는 1~{MAX_SPEAKERS}명의 목록이어야 함")
+    for person in value:
+        if not isinstance(person, dict) or set(person) - SPEAKER_KEYS:
+            raise FillError(f'{where}: dialogue의 사람은 {{"who", "text", "figure"}} 꼴이어야 함')
+        if not is_text(person.get("who")) or not str(person["who"]).strip():
+            raise FillError(f"{where}: dialogue의 who에 갑, 교사처럼 이름을 적어 주세요")
+        if not is_text(person.get("text")) or not str(person["text"]).strip():
+            raise FillError(f"{where}: dialogue의 text에 말풍선 글을 적어 주세요")
+        if "figure" in person and not (isinstance(person["figure"], str) and person["figure"].strip()):
+            raise FillError(f"{where}: dialogue의 figure는 teacher_f 같은 인물 이름이나 그림 파일 경로여야 함")
+
+
+def _check_pictures(value: object, where: str) -> None:
+    """picture는 그림 하나나 한 줄에 나란히 놓을 그림 둘의 목록이다."""
+    if not isinstance(value, list):
+        _check_picture(value, where)
+        return
+    if not 1 <= len(value) <= 2:
+        raise FillError(f"{where}: picture 목록은 그림 한두 장이어야 함 (한 줄에 나란히 놓는 것은 두 장까지)")
+    for one in value:
+        _check_picture(one, where)
+
+
+def _check_table(value: object, where: str) -> None:
+    guide = '{"head": ["구분", "값"], "rows": [["가", "1"]], "caption": "<표> 설명", "widths": [2, 1]} 꼴이어야 함'
+    if not isinstance(value, dict) or set(value) - TABLE_KEYS or not {"head", "rows"} <= set(value):
+        raise FillError(f"{where}: table은 {guide}")
+    head = _texts(value["head"], where, "table의 head")
+    rows = value["rows"]
+    if not isinstance(rows, list) or not 1 <= len(rows) <= MAX_TABLE_ROWS:
+        raise FillError(f"{where}: table의 rows는 1~{MAX_TABLE_ROWS}개 행의 목록이어야 함")
+    if not 1 <= len(head) <= MAX_TABLE_COLS:
+        raise FillError(f"{where}: table은 1~{MAX_TABLE_COLS}칸까지 만들 수 있음")
+    for row in rows:
+        if len(_texts(row, where, "table의 rows의 행")) != len(head):
+            raise FillError(f"{where}: table의 행마다 칸 수가 head와 같아야 함 ({len(head)}칸)")
+    if "caption" in value and (not is_text(value["caption"]) or not str(value["caption"]).strip()):
+        raise FillError(f"{where}: table의 caption은 글이어야 함")
+    _check_table_layout(value, len(head), where)
+
+
+def _check_table_layout(value: dict, count: int, where: str) -> None:
+    widths = value.get("widths")
+    if widths is not None and (not isinstance(widths, list) or len(widths) != count or not all(
+            isinstance(w, (int, float)) and not isinstance(w, bool) and w > 0 for w in widths)):
+        raise FillError(f"{where}: table의 widths는 칸 수({count}개)와 같은 양수 목록이어야 함 (예: [2, 1, 1])")
+    align = value.get("align")
+    if align is not None and (not isinstance(align, list) or len(align) != count
+                              or any(a not in ("left", "center", "right") for a in align)):
+        raise FillError(f'{where}: table의 align은 칸 수({count}개)와 같은 "left", "center", "right" 목록이어야 함')
+
+
+def _check_picture(value: object, where: str) -> None:
+    spec = {"file": value} if isinstance(value, str) else value
+    if not isinstance(spec, dict) or set(spec) - PICTURE_KEYS or not isinstance(spec.get("file"), str):
+        raise FillError(f'{where}: picture는 "그림.png"나 {{"file", "width_mm", "caption"}} 꼴이어야 함')
+    width = spec.get("width_mm")
+    if width is not None and (isinstance(width, bool) or not isinstance(width, (int, float)) or not 5 <= width <= 180):
+        raise FillError(f"{where}: picture의 width_mm는 5~180 사이의 수여야 함")
+    if "caption" in spec and not is_text(spec["caption"]):
+        raise FillError(f"{where}: picture의 caption은 글이어야 함")
 
 
 def _check_grid(item: dict, where: str) -> None:
@@ -84,7 +164,7 @@ def _check_item(item: object, where: str) -> None:
     kind = item.get("type")
     if kind not in ITEM_KEYS:
         raise FillError(f"{where}: type은 {', '.join(ITEM_KEYS)} 가운데 하나여야 함")
-    if "picture" in item or "image" in item:
+    if "image" in item or (kind in (WRITTEN, PASSAGE) and ("picture" in item or "dialogue" in item or "table" in item)):
         raise FillError(f"{where}: {PICTURE_GUIDE}")
     extra = set(item) - ITEM_KEYS[kind]
     if extra:

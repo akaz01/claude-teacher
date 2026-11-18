@@ -41,6 +41,11 @@
                                                                  #  더 긴 표는 행 단위로 나뉘고(머리행은 쪽마다 반복), 쪽보다 큰 행은 칸 안에서 나뉜다
                                                                  # valign: top/center/bottom, 칸 "header": true면 머리칸 음영
                                                                  # 칸 색·테두리는 make_hwpx_design.py, 표 "gap": normal|small|tight는 위아래 간격
+    {"type": "stem", "number": 1, "text": "문두", "points": 3.2},   # 문제지 문두: 둘째 줄 내어쓰기(기준선), 배점은 마지막 낱말에 묶음 빈칸으로 붙음
+    {"type": "choices", "items": ["가", "나", "다", "라", "마"], "layout": "auto"},
+                                                                 # 문제지 선지(①은 자동): 테두리 없는 표, ①이 기준선에서 시작. layout: 1x5(한 줄 5칸),
+                                                                 #  2x3(3+2), 5x1(한 줄에 하나), auto(가장 긴 선지로 고름). 두 줄 선지는 ① 뒤 글에 맞춤
+    {"type": "box", "label": "<보 기>", "paragraphs": ["ㄱ. 진술", "ㄴ. 진술"]},   # 자료·<보기> 상자: 기준선에서 단 끝까지 (make_hwpx_exam.py)
     {"type": "answer_box", "lines": 3},                          # 학생 답 쓰는 빈 칸
     {"type": "blank"},                                           # 빈 줄
     {"type": "page_break"}                                       # 다음 블록부터 새 쪽
@@ -85,7 +90,8 @@ from make_hwpx_cells import (  # noqa: F401  (표 칸 모양·크기 어림. 여
     TableCell, _estimated_rows, _make_cell, _row_heights, _span, _split_width, _text_lines, layout_table)
 from make_hwpx_options import (  # noqa: F401
     _bool_option, _choice, _int_option, _item_spec, _list_or_empty, _start_option, _validate_spec)
-from make_hwpx_lint import date_warnings, with_auto_keep
+from make_hwpx_exam import EXAM_PARA_STYLES, exam_handlers
+from make_hwpx_lint import date_warnings, wide_words, with_auto_keep
 from make_hwpx_check import LANG_ATTRS, MIMETYPE, refuse_foreign_target, validate_package  # noqa: F401  (validate_package는 여기서도 쓸 수 있게 다시 내보냄)
 from make_hwpx_save import OWN_FILES_ONLY, hwpx_check, save_atomically
 
@@ -128,12 +134,16 @@ UNDERLINE_OF = {"body": "body_ul", "cell": "cell_ul"}   # __밑줄__은 굵게+�
 SIZE_TO_CHAR = {"small": "small", "normal": "body", "large": "large", "xlarge": "xlarge"}
 OUTLINE_LEVELS = 6
 OUTLINE_INDENT = 1200                   # 항목 번호 한 단계당 왼쪽 들여쓰기
-# 이름: (정렬, 줄 간격 %, 문단 위, 문단 아래, 왼쪽 여백, 다음 문단과 함께)
+# 이름: (정렬, 줄 간격 %, 문단 위, 문단 아래, 왼쪽 여백, 다음 문단과 함께[, 내어쓰기])
+# 내어쓰기는 "• ", "1. ", "10. " 같은 글머리 폭(11pt 본문, 한글 2024 화면에서 픽셀로 잼). 두 줄로 넘어간 항목의 둘째 줄이 글 시작에 맞춰진다
+ITEM_HANG = {"bullet": 1000, "num1": 1000, "num2": 1600}
 PARA_STYLES = {
     "body": ("JUSTIFY", 160, 0, 300, 0, False), "left": ("LEFT", 160, 0, 300, 0, False),
     "center": ("CENTER", 160, 0, 300, 0, False), "right": ("RIGHT", 160, 0, 300, 0, False),
     "title": ("CENTER", 160, 0, 800, 0, False), "heading": ("LEFT", 160, 600, 300, 0, True),
-    "item": ("LEFT", 160, 0, 150, 1000, False),
+    "item": ("LEFT", 160, 0, 150, 1000, False, ITEM_HANG["bullet"]),
+    "item_num1": ("LEFT", 160, 0, 150, 1000, False, ITEM_HANG["num1"]),
+    "item_num2": ("LEFT", 160, 0, 150, 1000, False, ITEM_HANG["num2"]),
     "spacer": ("LEFT", 100, 0, 0, 0, False), "chip": ("CENTER", 100, 0, 0, 0, False),
     "anchor": ("LEFT", 100, 0, 0, 0, False),
     "cell": ("LEFT", 130, 0, 0, 0, False), "cell_center": ("CENTER", 130, 0, 0, 0, False),
@@ -143,6 +153,7 @@ PARA_STYLES = {
 }
 # "keep_with_next": true인 문단용: 다음 문단(선지, 자료 표)과 같은 쪽·단에 놓인다
 PARA_STYLES.update({f"{name}_keep": PARA_STYLES[name][:5] + (True,) for name in ("body", "left", "center", "right")})
+PARA_STYLES.update(EXAM_PARA_STYLES)          # 문제지 블록(stem, choices, box)용 문단 모양: make_hwpx_exam.py
 ALIGN_TO_PARA = {"justify": "body", "left": "left", "center": "center", "right": "right"}
 HEADER_FILL_COLOR = "#D9D9D9"
 
@@ -303,6 +314,7 @@ class SectionWriter:
             "bullets": self._bullets, "numbered": self._numbered, "table": self._table_block,
             "answer_box": self._answer_box, "blank": self._blank, "page_break": self._request_page_break,
             "shape": self._shape_block,
+            **exam_handlers(self, lambda: self.table_width + 2 * TABLE_OUT_MARGIN),
         }
 
     def runs(self, text, char: str = "body", blank_fill: str | None = None) -> str:
@@ -462,6 +474,7 @@ class SectionWriter:
         in_x, in_y = (0, 0) if self.app else (CELL_MARGIN_X, CELL_MARGIN_Y)     # 앱 학습지는 칸마다 여백을 정한다
         total_width = round(paper["width"] * PX) if paper else _width_px(width_px, self.table_width)
         col_widths = _split_width(total_width, widths or [1] * cols)
+        self._warn_wide_words(cells, col_widths, in_x)
         heights = _row_heights(cells, len(all_rows), row_height)
         by_row: list[list[TableCell]] = [[] for _ in all_rows]
         for c in cells:
@@ -525,7 +538,24 @@ class SectionWriter:
     def _numbered(self, block: dict) -> str:
         texts = _item_texts(block)
         start = _start_option(block.get("start", 1), "numbered")
-        return "".join(self.text_paragraph(f"{i}. {text}", "item") for i, text in enumerate(texts, start))
+        para = "item_num1" if start + len(texts) - 1 < 10 else "item_num2"
+        return "".join(self.text_paragraph(f"{i}. {text}", para) for i, text in enumerate(texts, start))
+
+    def _warn_wide_words(self, cells: list, col_widths: list[int], in_x: int) -> None:
+        """칸보다 넓은 낱말은 한글에서 낱말 중간("문/항", "선택형(5/지)")이 끊긴다. 막지 않고 알린다.
+
+        앱 학습지(page "app")는 칸마다 여백을 따로 정하므로 이 어림을 쓰지 않는다."""
+        if self.app:
+            return
+        found: dict[tuple[int, str], list[int]] = {}
+        for c in cells:
+            inner = sum(col_widths[c.col:c.col + c.colspan]) - 2 * (in_x or CELL_MARGIN_X)
+            for word in wide_words(str(c.text), inner):
+                found.setdefault((c.col, word), []).append(c.row + 1)
+        for (col, word), rows in found.items():
+            where = f"{rows[0]}행" if len(rows) == 1 else f"{rows[0]}~{rows[-1]}행 중 {len(rows)}곳"
+            self.warnings.append(f"표 {col + 1}번째 칸({where})의 '{word}'가 칸보다 넓어 낱말 중간에서 줄이 바뀝니다. "
+                                 "widths에서 그 칸을 넓히거나 낱말을 줄여 주세요")
 
     def _table_block(self, block: dict) -> str:
         rows = _list_or_empty(block.get("rows"), "rows")

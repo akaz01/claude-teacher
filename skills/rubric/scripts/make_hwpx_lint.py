@@ -77,3 +77,21 @@ def date_warnings(spec: dict) -> list[str]:
     """날짜 표기 경고 목록을 돌려준다. 문제가 없으면 빈 목록."""
     texts = _strings(spec)
     return _iso_warning(texts) + _official_warnings(texts)
+
+
+# ---------------------------------------------------------------- 표 칸보다 넓은 낱말
+
+CELL_EM = 1000                          # 표 칸 글자 10pt
+NARROW = set(" .,:;'\"()[]·-/|!?")
+
+
+def _word_width(word: str, em: int = CELL_EM) -> float:
+    """낱말 폭 어림 (HWPUNIT). 한글·한자·원문자 1em, 영문·숫자 0.5em, 문장 부호·괄호 0.35em (한글 2024 화면과 맞춤)."""
+    return sum(em * (0.35 if char in NARROW else 1.0 if ord(char) > 0x2E7F else 0.5) for char in word)
+
+
+def wide_words(text: str, inner_width: int, em: int = CELL_EM) -> list[str]:
+    """칸 안쪽 너비보다 넓어 한글이 낱말 중간에서 줄을 바꿀 낱말들. 수식({{ }})과 표기(**, __, ~~)는 뺀다."""
+    plain = re.sub(r"\{\{.*?\}\}", " ", text)
+    plain = re.sub(r"\*\*|__|~~", "", plain)
+    return [word for word in plain.split() if _word_width(word, em) > inner_width]

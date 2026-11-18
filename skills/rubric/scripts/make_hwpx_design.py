@@ -383,9 +383,9 @@ def border_fill_xml(fill_id: int, key: tuple) -> str:
 
 # ---------------------------------------------------------------- header.xml 조각
 
-def _margin(left: int, prev: int, after: int, line_spacing: int) -> str:
+def _margin(left: int, prev: int, after: int, line_spacing: int, intent: int = 0) -> str:
     return (
-        f'<hh:margin><hc:intent value="0" unit="HWPUNIT"/><hc:left value="{left}" unit="HWPUNIT"/>'
+        f'<hh:margin><hc:intent value="{intent}" unit="HWPUNIT"/><hc:left value="{left}" unit="HWPUNIT"/>'
         f'<hc:right value="0" unit="HWPUNIT"/><hc:prev value="{prev}" unit="HWPUNIT"/>'
         f'<hc:next value="{after}" unit="HWPUNIT"/></hh:margin>'
         f'<hh:lineSpacing type="PERCENT" value="{line_spacing}" unit="HWPUNIT"/>'
@@ -393,7 +393,8 @@ def _margin(left: int, prev: int, after: int, line_spacing: int) -> str:
 
 
 def _para_pr(para_id: int, style: tuple) -> str:
-    align, line_spacing, prev, after, left, keep_with_next = style
+    align, line_spacing, prev, after, left, keep_with_next = style[:6]
+    hang = style[6] if len(style) > 6 else 0         # 내어쓰기: 둘째 줄부터 글머리 뒤 글 시작에 맞춘다
     # 한글은 hp:default 쪽 여백을 hp:case 값의 2배로 저장한다 (골격 문단 모양 1번 참고)
     return (
         f'<hh:paraPr id="{para_id}" tabPrIDRef="0" condense="0" fontLineHeight="0" snapToGrid="1" '
@@ -404,8 +405,8 @@ def _para_pr(para_id: int, style: tuple) -> str:
         f'keepWithNext="{int(keep_with_next)}" keepLines="1" pageBreakBefore="0" lineWrap="BREAK"/>'
         '<hh:autoSpacing eAsianEng="0" eAsianNum="0"/><hp:switch>'
         '<hp:case hp:required-namespace="http://www.hancom.co.kr/hwpml/2016/HwpUnitChar">'
-        f'{_margin(left, prev, after, line_spacing)}</hp:case>'
-        f'<hp:default>{_margin(left * 2, prev * 2, after * 2, line_spacing)}</hp:default></hp:switch>'
+        f'{_margin(left, prev, after, line_spacing, -hang)}</hp:case>'
+        f'<hp:default>{_margin(left * 2, prev * 2, after * 2, line_spacing, -hang * 2)}</hp:default></hp:switch>'
         '<hh:border borderFillIDRef="2" offsetLeft="0" offsetRight="0" offsetTop="0" offsetBottom="0" '
         'connect="0" ignoreMargin="0"/></hh:paraPr>'
     )

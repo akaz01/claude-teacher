@@ -2,7 +2,7 @@
 
 글자 안의 {{...}}는 한글 수식(hp:equation)이 된다 (한 줄 안, 한글이 없고 비어 있지 않을 때). 안쪽은 한글 수식 문법을 그대로 쓰고,
 숫자/숫자는 분수로 바꾼다: {{2/3}} → {2} over {3}, {{1 7/12}} → 1 {7} over {12} (대분수).
-한글은 문서를 열 때 수식 크기를 다시 계산하므로 hp:sz는 어림값이다 (한글에서 PDF로 바꿔 확인).
+hp:sz는 어림값이다. 한글 2024는 열 때 너비를 다시 계산하지 않으므로 equation_width를 실측에 맞춰 넉넉히 잡는다.
 """
 
 from __future__ import annotations
@@ -91,10 +91,85 @@ def split_equations(text: str) -> list[tuple[str, bool]]:
     return [(part, is_equation) for part, is_equation in pieces if part]
 
 
-def equation_width(script: str) -> int:
-    """수식 너비 어림 (한글이 문서를 열 때 다시 계산한다)."""
-    visible = re.sub(r"\bover\b|[{}\s]", "", script)
-    return max(len(visible), 1) * EQUATION_CHAR_WIDTH
+def equation_width(script: str, base_unit: int = EQUATION_BASE_UNIT) -> int:
+    """수식 너비 어림 (HWPUNIT).
+
+    한글 2024는 파일을 열 때 이 너비를 다시 계산하지 않고 그대로 쓴다. 실제보다 좁으면 뒤 글자와 겹치므로
+    한글이 EquationCreate로 만든 수식의 너비(baseUnit 1000)를 재어 기호마다 폭을 맞췄다 (2026-11-18 실측).
+    """
+    items, _ = _width_items(_EQ_TOKEN.findall(script), 0)
+    return max(round(sum(items) * WIDTH_SAFETY * base_unit / 1000), EQUATION_CHAR_WIDTH * base_unit // 1000)
+
+
+_EQ_TOKEN = re.compile(r"[A-Za-z]+|\d+(?:\.\d+)?|\S")
+EQ_WORDS = {"LEQ": 1050, "GEQ": 1050, "NEQ": 1050, "leq": 1050, "geq": 1050, "times": 1120, "cdot": 700,
+            "inf": 900, "INF": 900, "le": 1050, "ge": 1050, "pm": 1120, "therefore": 900, "because": 900}
+EQ_ROMAN = {"sin", "cos", "tan", "log", "ln", "lim", "max", "min", "sum", "int", "exp", "det"}
+EQ_STYLES = {"bold", "it", "rm"}
+EQ_SPACE = {"`": 250, "~": 500}
+EQ_SYMBOLS = {"×": 1120, "÷": 1120, "±": 1120, "≤": 1050, "≥": 1050, "≠": 1050, "→": 1200, "∞": 900, "°": 400,
+              "+": 1120, "-": 1120, "=": 1200, "<": 1200, ">": 1200, "(": 420, ")": 420, "[": 420, "]": 420,
+              ",": 500, "|": 400, ".": 300, ":": 400, "!": 400}
+EQ_DIGIT, EQ_LOWER, EQ_UPPER, EQ_OTHER = 525, 620, 780, 650
+SCRIPT_RATIO = 0.7                     # 위·아래첨자는 본문 글자의 약 0.7배
+FRACTION_PAD = 450                     # 분수 가로줄 좌우 여유
+SQRT_EXTRA = 800                       # 근호 기호 폭
+WIDTH_SAFETY = 1.03                    # 어림이 모자라 뒤 글자와 겹치지 않게 두는 여유
+
+
+def _token_width(token: str) -> int:
+    if token in EQ_WORDS:
+        return EQ_WORDS[token]
+    if token in EQ_ROMAN:
+        return 500 * len(token)
+    if token in GREEK_NAMES or token.lower() in GREEK_NAMES:
+        return EQ_UPPER if token.isupper() else EQ_LOWER
+    if token[0].isdigit():
+        return EQ_DIGIT * len(token.replace(".", "")) + (EQ_SYMBOLS["."] if "." in token else 0)
+    if token[0].isalpha():
+        return sum(EQ_UPPER if char.isupper() else EQ_LOWER for char in token)
+    return EQ_SYMBOLS.get(token, EQ_SPACE.get(token, EQ_OTHER))
+
+
+def _width_items(tokens: list[str], start: int, nested: bool = False) -> tuple[list[float], int]:
+    """tokens[start:]를 닫는 } 앞까지 읽어 덩어리마다 너비를 낸다. (너비 목록, 다음 위치)
+    맨 바깥(nested가 아님)의 짝 없는 }는 건너뛴다."""
+    items: list[float] = []
+    index = start
+    while index < len(tokens):
+        token = tokens[index]
+        index += 1
+        if token == "}":
+            if nested:
+                break
+            continue
+        if token in EQ_STYLES:
+            continue
+        if token == "{":
+            inner, index = _width_items(tokens, index, True)
+            items.append(sum(inner))
+        elif token == "over" and items:
+            following, index = _one_item(tokens, index)
+            items[-1] = max(items[-1], following) + FRACTION_PAD
+        elif token in ("^", "_"):
+            following, index = _one_item(tokens, index)
+            items.append(following * SCRIPT_RATIO)
+        elif token == "sqrt":
+            following, index = _one_item(tokens, index)
+            items.append(following + SQRT_EXTRA)
+        else:
+            items.append(_token_width(token))
+    return items, index
+
+
+def _one_item(tokens: list[str], index: int) -> tuple[float, int]:
+    """다음 덩어리 하나({...} 또는 낱말 하나)의 너비."""
+    if index >= len(tokens):
+        return 0.0, index
+    if tokens[index] == "{":
+        inner, index = _width_items(tokens, index + 1, True)
+        return sum(inner), index
+    return float(_token_width(tokens[index])), index + 1
 
 
 def _strings(value) -> list[str]:
@@ -136,16 +211,17 @@ def equation_text_warnings(spec) -> list[str]:
     return warnings
 
 
-def equation_xml(equation_id: int, script: str, color: str = DEFAULT_COLOR, bold: bool = False) -> str:
+def equation_xml(equation_id: int, script: str, color: str = DEFAULT_COLOR, bold: bool = False,
+                 base_unit: int = EQUATION_BASE_UNIT) -> str:
     """글자처럼 취급하는(treatAsChar) 한글 수식 개체. script는 XML에 넣기 전의 수식 문법."""
-    width = equation_width(script)
+    width = equation_width(script, base_unit)
     height = FRACTION_HEIGHT if re.search(r"\bover\b", script) else EQUATION_HEIGHT
     if bold:
         script = f"bold {{{script}}}"
     return (
         f'<hp:equation id="{equation_id}" zOrder="0" numberingType="EQUATION" textWrap="TOP_AND_BOTTOM" '
         'textFlow="BOTH_SIDES" lock="0" dropcapstyle="None" version="Equation Version 60" baseLine="66" '
-        f'textColor="{color}" baseUnit="{EQUATION_BASE_UNIT}" lineMode="CHAR" font="HancomEQN">'
+        f'textColor="{color}" baseUnit="{base_unit}" lineMode="CHAR" font="HancomEQN">'
         f'<hp:sz width="{width}" widthRelTo="ABSOLUTE" height="{height}" heightRelTo="ABSOLUTE" protect="0"/>'
         '<hp:pos treatAsChar="1" affectLSpacing="0" flowWithText="1" allowOverlap="0" holdAnchorAndSO="0" '
         'vertRelTo="PARA" horzRelTo="PARA" vertAlign="TOP" horzAlign="LEFT" vertOffset="0" horzOffset="0"/>'
