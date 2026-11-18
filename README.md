@@ -16,7 +16,7 @@
 <div align="center">
 
 <a href="#설치하기"><img alt="설치하기" src="https://img.shields.io/badge/%EC%84%A4%EC%B9%98%ED%95%98%EA%B8%B0-1f6feb?style=for-the-badge"></a>
-<a href="#최신-판으로-업데이트하기"><img alt="최신 판으로 업데이트" src="https://img.shields.io/badge/%EC%B5%9C%EC%8B%A0%20%ED%8C%90%EC%9C%BC%EB%A1%9C%20%EC%97%85%EB%8D%B0%EC%9D%B4%ED%8A%B8-2ea44f?style=for-the-badge"></a>
+<a href="#최신판으로-업데이트하기"><img alt="최신판으로 업데이트" src="https://img.shields.io/badge/%EC%B5%9C%EC%8B%A0%ED%8C%90%EC%9C%BC%EB%A1%9C%20%EC%97%85%EB%8D%B0%EC%9D%B4%ED%8A%B8-2ea44f?style=for-the-badge"></a>
 <a href="#이렇게-쓰세요"><img alt="이렇게 쓰세요" src="https://img.shields.io/badge/%EC%9D%B4%EB%A0%87%EA%B2%8C%20%EC%93%B0%EC%84%B8%EC%9A%94-8250df?style=for-the-badge"></a>
 <a href="#스킬-목록"><img alt="스킬 목록" src="https://img.shields.io/badge/%EC%8A%A4%ED%82%AC%20%EB%AA%A9%EB%A1%9D-0a7ea4?style=for-the-badge"></a>
 <a href="#업데이트-소식"><img alt="업데이트 소식" src="https://img.shields.io/badge/%EC%97%85%EB%8D%B0%EC%9D%B4%ED%8A%B8%20%EC%86%8C%EC%8B%9D-d97757?style=for-the-badge"></a>
@@ -34,7 +34,7 @@
 
 | 처음이신가요? | 이미 쓰고 계신가요? | 쓰는 법이 궁금하신가요? | 막히셨나요? |
 |:---:|:---:|:---:|:---:|
-| **[그림으로 보는 설치 안내](docs/install.md)** | **[최신 판으로 업데이트하기](#최신-판으로-업데이트하기)** | **[사용법](docs/usage.md)** | **[자주 묻는 질문](docs/faq.md)** |
+| **[그림으로 보는 설치 안내](docs/install.md)** | **[최신판으로 업데이트하기](#최신판으로-업데이트하기)** | **[사용법](docs/usage.md)** | **[자주 묻는 질문](docs/faq.md)** |
 | claude.ai · Claude Code 설치를 단계마다 그림으로 | 새 판 zip 교체, 플러그인 업데이트 명령 | 스킬 8개 부르는 말과 요청 예시 | 파일이 안 만들어질 때, 스킬이 안 불릴 때 |
 
 ---
@@ -146,7 +146,7 @@ subject-record.zip   activity-record.zip   behavior-record.zip
 /plugin install teacher-kit@claude-teacher
 ```
 
-업데이트는 아래 [최신 판으로 업데이트하기](#최신-판으로-업데이트하기)를 보세요. 그림 안내: [설치와 업데이트 2장](docs/install.md#2-claude-code-플러그인)
+업데이트는 아래 [최신판으로 업데이트하기](#최신판으로-업데이트하기)를 보세요. 그림 안내: [설치와 업데이트 2장](docs/install.md#2-claude-code-플러그인)
 
 ### 처음 쓰실 때
 
@@ -158,9 +158,9 @@ subject-record.zip   activity-record.zip   behavior-record.zip
 
 ---
 
-## 최신 판으로 업데이트하기
+## 최신판으로 업데이트하기
 
-> 새 판이 나오면 [업데이트 소식](#업데이트-소식)에 무엇이 바뀌었는지, 어떤 스킬을 바꾸면 되는지 적어 둡니다. 지금 최신 판: [![release](https://img.shields.io/github/v/release/akaz01/claude-teacher?label=&color=2ea44f)](https://github.com/akaz01/claude-teacher/releases/latest)
+> 새 판이 나오면 [업데이트 소식](#업데이트-소식)에 무엇이 바뀌었는지, 어떤 스킬을 바꾸면 되는지 적어 둡니다. 지금 최신판: [![release](https://img.shields.io/github/v/release/akaz01/claude-teacher?label=&color=2ea44f)](https://github.com/akaz01/claude-teacher/releases/latest)
 
 ### claude.ai (웹, 데스크톱 앱)
 
@@ -186,7 +186,7 @@ subject-record.zip   activity-record.zip   behavior-record.zip
 # 1. 마켓플레이스 목록 새로 고침
 claude plugin marketplace update claude-teacher
 
-# 2. 플러그인을 최신 판으로 업데이트 (다시 시작하면 적용)
+# 2. 플러그인을 최신판으로 업데이트 (다시 시작하면 적용)
 claude plugin update teacher-kit@claude-teacher
 ```
 
