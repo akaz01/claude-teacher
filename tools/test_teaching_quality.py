@@ -255,10 +255,16 @@ class ItemCrossClueTest(unittest.TestCase):
         self.assertEqual(missing_rules(skill("assessment-items"), {
             "모든 쌍": ("문항 간 단서", "모든 문항 쌍"), "횟수": ("n×(n-1)",), "<보기> 진술": ("<보기>", "정답 선지", "사실")}), [])
         checklist = read("shared/checklists/item-quality.md")
-        row = next(line for line in checklist.splitlines() if line.startswith("| 문항 간 단서 |"))
-        for word in ("모든 문항 쌍", "정답의 근거", "예시 답안", "<보기>", "n×(n-1)"):
+        row = next(line for line in checklist.splitlines() if line.startswith("| 문항 간 단서"))
+        for word in ("모든 문항 쌍", "정답의 근거", "예시 답안", "<보기>", "n×(n-1)", "정답을 가린 채"):
             self.assertIn(word, row)
         self.assertTrue(has_rule(checklist, "정답이나 정답의 근거", "알려 주지 않는가"))
+
+    def test_blind_review_is_required(self):
+        """사용자 지시(2026-11-18): 다른 문항으로 답을 알 수 있게 하는 것은 절대 금지. 정답을 가린 검토를 따로 한다."""
+        text = skill("assessment-items")
+        self.assertTrue(has_rule(text, "문항 간 단서 차단", "절대 금지"))
+        self.assertTrue(has_rule(text, "정답을 가린 검토", "다른 문항들만 읽고", "검토 에이전트"))
 
     def test_check_list_items_match_the_marks(self):
         self.assertTrue(has_rule(skill("assessment-items"), "목록의 항목", "`[확인 필요]`로 시작"))

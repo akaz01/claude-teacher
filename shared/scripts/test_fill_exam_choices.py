@@ -17,7 +17,7 @@ HIGHLIGHT = "markpenBegin"
 
 def pick(count: int, answer: int, **extra) -> dict:
     words = ["가나", "다라마", "바사아자", "차카타파하", "거너더러머버"]
-    return {"type": "short_table", "stem": f"{count}지선다 문제", "points": 3,
+    return {"type": "short_table", "layout": "1x5", "stem": f"{count}지선다 문제", "points": 3,
             "choices": words[:count], "answer": answer, **extra}
 
 
@@ -147,7 +147,7 @@ def answers(counts: list[int]) -> list[tuple[str, dict]]:
 
 
 def test_answer_spread_is_checked_for_four_choices():
-    even = answers([1, 2, 3, 4, 1, 2, 3, 4])
+    even = answers([1, 2, 3, 4, 2, 4, 1, 3])
     lopsided = answers([2, 2, 1, 2, 3, 2, 4, 2])
     assert not choice_order_notes(even)
     assert any("정답 번호 분포" in note for note in choice_order_notes(lopsided))

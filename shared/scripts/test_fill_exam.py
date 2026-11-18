@@ -138,7 +138,8 @@ def item_paragraphs(answer: int = 5, **more: object) -> dict:
 
 
 def visible(xml: str) -> str:
-    return re.sub(r"<[^>]+>", "", xml)
+    """보이는 글. 묶음 빈칸(hp:nbSpace)은 보통 빈칸으로 읽는다."""
+    return re.sub(r"<[^>]+>", "", xml.replace("<hp:nbSpace/>", " "))
 
 
 def package_text(path: Path) -> str:
@@ -593,7 +594,8 @@ class SpecTest(ExamCase):
         cases = (({"items": []}, '"items" 문항 목록이 없음'), ({"items": "x"}, '"items"'), ([], "items"),
                  ({"items": [item_short()], "extra": 1}, "모르는 항목"),
                  ({"items": [{"type": "그림"}]}, "type은"),
-                 ({"items": [item_short(1, picture="a.png")]}, "그림은 넣을 수 없음"),
+                 ({"items": [item_short(1, picture="a.png")]}, "그림 파일을 읽을 수 없음"),
+                 ({"items": [item_short(1, image="a.png")]}, "picture"),
                  ({"items": [item_short(1, more=1)]}, "모르는 항목 more"),
                  ({"items": [item_short(6)]}, "1부터 5까지"), ({"items": [item_short(True)]}, "answer"),
                  ({"items": [item_short(stem=" ")]}, "stem"), ({"items": [item_short(points="많이")]}, "points"),

@@ -172,3 +172,23 @@ class BuildTest(BuildMixin, unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+# 한글 2024가 EquationCreate로 만든 수식의 실제 너비 (baseUnit 1000, 2026-11-18 실측).
+# 한글은 파일을 열 때 너비를 다시 계산하지 않으므로, 어림이 이보다 좁으면 뒤 글자와 겹친다.
+HANGUL_MEASURED_WIDTHS = {"4x+3y-12=0": 7205, "y=2x-1": 4525, "y=x+1": 4000, "a=3": 2295, "2x+ay-3=0": 6680,
+                          "x+(a-1)y+3=0": 8605, "a={2} over {3}": 2795, "PA^{2}+PB^{2}": 4990, "d^{2}": 975,
+                          "12": 1050, "-3": 1490, "A(1,2)": 3135, "x^{2}+y^{2}=25": 5425,
+                          "{1} over {2}x-3": 3255, "f(x)=x^{2}-4x+3": 8230, "LEQ": 1050, "a+b": 2080}
+
+
+def test_equation_width_is_never_narrower_than_hangul():
+    from make_hwpx_equation import equation_width
+    for script, measured in HANGUL_MEASURED_WIDTHS.items():
+        estimated = equation_width(script, 1000)
+        assert measured <= estimated <= measured * 1.25, (script, estimated, measured)
+
+
+def test_equation_width_scales_with_font_size():
+    from make_hwpx_equation import equation_width
+    assert equation_width("4x+3y-12=0", 1200) == round(equation_width("4x+3y-12=0", 1000) * 1.2)

@@ -1,6 +1,33 @@
 # teacher-kit: 교사용 Claude 스킬 모음
 
+[![release](https://img.shields.io/github/v/release/akaz01/claude-teacher?label=release&color=2ea44f)](https://github.com/akaz01/claude-teacher/releases/latest)
+[![tests](https://github.com/akaz01/claude-teacher/actions/workflows/test.yml/badge.svg)](https://github.com/akaz01/claude-teacher/actions/workflows/test.yml)
+[![license](https://img.shields.io/badge/license-CC%20BY--NC%204.0-lightgrey)](LICENSE)
+![skills](https://img.shields.io/badge/skills-8-blue)
+![output](https://img.shields.io/badge/output-hwpx%20%C2%B7%20pptx-1f6feb)
+![claude.ai](https://img.shields.io/badge/claude.ai-skills-d97757)
+![Claude Code](https://img.shields.io/badge/Claude%20Code-plugin-d97757)
+![python](https://img.shields.io/badge/python-3.11%2B-3776AB?logo=python&logoColor=white)
+
+> 스킬 8개 | 수업 · 평가 · 학교생활기록부 | 한글(hwpx) · 파워포인트 결과물 | 2022 개정 성취기준 4,451개 | claude.ai · Claude Code
+
+---
+
+<div align="center">
+
+**[설치하기](#설치하기)** | **[업데이트 소식](#업데이트-소식)** | **[이렇게 쓰세요](#이렇게-쓰세요)** | **[스킬 목록](#스킬-목록)** | **[문의와 오류 제보](#문의와-오류-제보)**
+
+</div>
+
+---
+
+**지도안, 학습지, 수업 PPT, 시험지, 학생부 초안을 학교 양식에 바로 쓰도록 만듭니다.**
+
 초·중·고 교사의 수업·평가·학교생활기록부 업무를 돕는 Claude 스킬 8개입니다. 결과물은 학교에서 바로 쓰도록 **한글(hwpx)**과 파워포인트 파일로 만들고, 학교 엑셀 양식을 주시면 그 파일에 채웁니다.
+
+**claude.ai(웹, 데스크톱 앱)와 Claude Code에서 쓸 수 있습니다.**
+
+---
 
 ## 이런 원칙으로 만들었습니다
 
@@ -45,9 +72,29 @@
 
   ![릴리스 페이지에서 받을 파일](docs/images/install-1-release.png)
 
-- **Claude Code (플러그인)**: `/plugin marketplace add akaz01/claude-teacher` 다음 `/plugin install teacher-kit@claude-teacher`를 입력합니다.
+- **Claude Code (플러그인)**: 플러그인 `teacher-kit`에는 스킬 8개와 한글(hwpx)·파워포인트 파일을 만드는 도구가 모두 들어 있습니다. 골라 설치하는 방식이 아닙니다.
+  - 설치: `/plugin marketplace add akaz01/claude-teacher` 다음 `/plugin install teacher-kit@claude-teacher`를 입력합니다.
+  - 업데이트: Claude Code 안에서 `/plugin marketplace update claude-teacher`를 입력합니다.
+  - 지우기: `/plugin uninstall teacher-kit@claude-teacher`
 
 처음에는 "프로필 설정해 줘"라고 말씀하셔서 교사 프로필을 만들어 두시면 편합니다. 자세한 순서와 업데이트 방법은 [설치와 업데이트](docs/install.md)를 보세요.
+
+## 업데이트 소식
+
+### 0.5.0 (2026-11-18) — 시험 문항(`assessment-items`)과 원안지 배치
+
+- **문항은 자료를 읽어야 풀리게 냅니다.** 사료, 대화, 표, 그래프, 그림 같은 자료를 모든 문항에 붙입니다. 이름 하나를 맞히는 문항이나 자료 없이 <보기>만 고르는 문항은 내지 않습니다.
+- **다른 문항으로 답을 알 수 없게 합니다.** 출제 뒤 정답을 가린 채 다른 문항만 읽고 답이 드러나는지 따로 검토합니다. 정답 번호가 같은 순서로 되풀이되면 도구가 알려 줍니다.
+- **수능 시험지를 기준으로 배치합니다.**
+  - 밑줄은 문두 따옴표 안 말과 같은 범위에만 긋습니다.
+  - 출처는 (가)·(나) 자료마다 바로 아래에 "- 『신한민보』, 1910. 7. 6. -" 꼴로 답니다. "(재구성)"은 쓰지 않습니다.
+- **원안지가 더 읽기 좋아졌습니다.**
+  - 두 줄짜리 선지가 다음 선지에 붙던 문제를 고쳐, 선지 사이를 줄 간격과 같게 맞춥니다.
+  - 발문은 양쪽 정렬, 선지는 왼쪽 정렬입니다. 줄은 글자 단위로 넘겨 낱말 사이가 벌어지지 않습니다.
+  - 배점 앞은 보통 빈칸이라 한글에서 바로 고칠 수 있습니다.
+- **자료 표와 그림**: 연표·통계표를 칸 있는 표로 넣고, 그림 두 장을 나란히 놓습니다. 빈칸은 실선으로 표시합니다.
+- 함께 바뀐 스킬: 한글 문서를 만드는 공용 도구가 바뀌어 `lesson-plan`, `worksheet`, `rubric`도 새 판입니다(표 칸 넘침 알림, 수식 폭 보정).
+- 업데이트하는 법: claude.ai는 [릴리스 페이지](https://github.com/akaz01/claude-teacher/releases/latest)에서 `assessment-items.zip`, `lesson-plan.zip`, `worksheet.zip`, `rubric.zip`을 받아 같은 이름 스킬마다 **업로드 및 교체**합니다. Claude Code는 `/plugin marketplace update claude-teacher`를 입력합니다.
 
 ## 이렇게 쓰세요
 

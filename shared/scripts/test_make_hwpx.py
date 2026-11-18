@@ -614,3 +614,29 @@ class CheckScriptCliTest(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+def test_bullet_and_numbered_items_hang_their_second_line(tmp_path):
+    """두 줄로 넘어간 글머리표·번호 항목의 둘째 줄이 "• ", "1. " 뒤 글 시작에 맞도록 내어쓰기(음수 intent)를 둔다."""
+    import re as _re
+    import zipfile as _zipfile
+    from make_hwpx import ITEM_HANG, build_hwpx
+    out = tmp_path / "items.hwpx"
+    build_hwpx({"blocks": [{"type": "bullets", "items": ["가"]}, {"type": "numbered", "items": ["나"]},
+                           {"type": "numbered", "start": 9, "items": ["다", "라"]}]}, out)
+    with _zipfile.ZipFile(out) as package:
+        header = package.read("Contents/header.xml").decode("utf-8")
+    intents = {int(value) for value in _re.findall(r'<hc:intent value="(-?\d+)"', header)}
+    for hang in ITEM_HANG.values():
+        assert -hang in intents
+
+
+def test_table_warns_when_a_word_is_wider_than_its_cell(tmp_path):
+    """좁은 칸의 '문항', '선택형(5지)'처럼 칸보다 넓은 낱말은 한글이 낱말 중간에서 끊으므로 경고한다."""
+    from make_hwpx import build_hwpx
+    narrow = {"type": "table", "header": ["문항", "유형", "내용 영역"], "rows": [["1", "선택형(5지)", "가"]],
+              "widths": [1, 1, 30]}
+    wide = {**narrow, "widths": [3, 5, 24]}
+    warned = build_hwpx({"page": "sheet", "blocks": [narrow]}, tmp_path / "a.hwpx")
+    assert any("'문항'" in w for w in warned) and any("'선택형(5지)'" in w for w in warned)
+    assert not any("칸보다 넓어" in w for w in build_hwpx({"page": "sheet", "blocks": [wide]}, tmp_path / "b.hwpx"))

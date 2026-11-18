@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import re
 from collections import Counter
+from fractions import Fraction
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -457,7 +458,7 @@ def inspect_exam(path: Path) -> str:
              "유형별 틀:"]
     lines += [f"  {kind} ({KIND_NAMES[kind]}): {count}개" for kind, count in counts.items()]
     lines += [f"  자료 상자: {sum(1 for f in exam.frames if f.box)}개, <보기>: {sum(1 for f in exam.frames if f.bogi)}개, "
-              f"그림: {sum(1 for f in exam.frames if f.picture)}개 (그림은 새로 넣지 못함)"]
+              f"그림: {sum(1 for f in exam.frames if f.picture)}개 (그림은 picture, 대화 장면은 dialogue로 넣을 수 있음)"]
     lines += [_mark_line(exam), "문항별 틀:"]
     lines += [_frame_line(frame) for frame in exam.frames]
     lines += ["머리와 꼬리 (fills에 이 번호를 씀):", *_outside_lines(form, exam)]
@@ -466,14 +467,17 @@ def inspect_exam(path: Path) -> str:
 
 # ---------------------------------------------------------------- 줄 너비 어림 (배점이 줄 끝에서 쪼개지지 않게)
 
-def _column_width(xml: str) -> int | None:
-    """본문 단 하나의 너비 (HWPUNIT). 구역 설정을 읽지 못하면 None."""
+def _column_width(xml: str, upto: int | None = None) -> int | None:
+    """본문 단 하나의 너비 (HWPUNIT). upto 앞(첫 문항 문단까지)에서 마지막으로 선 단 설정을 쓴다.
+    머리는 1단이고 문항부터 2단인 양식도 맞는다. 구역 설정을 읽지 못하면 None."""
     page = re.search(r'<hp:pagePr\b[^>]*?\bwidth="(\d+)"', xml)
     margin = re.search(r'<hp:margin\b[^>]*?\bleft="(\d+)"[^>]*?\bright="(\d+)"', xml)
     if page is None or margin is None:
         return None
     width = int(page.group(1)) - int(margin.group(1)) - int(margin.group(2))
-    columns = re.search(r'<hp:colPr\b[^>]*?\bcolCount="(\d+)"[^>]*?\bsameGap="(\d+)"', xml)
+    settings = list(re.finditer(r'<hp:colPr\b[^>]*?\bcolCount="(\d+)"[^>]*?\bsameGap="(\d+)"',
+                                xml if upto is None else xml[:upto]))
+    columns = settings[-1] if settings else None
     if columns and int(columns.group(1)) > 1:
         count = int(columns.group(1))
         width = (width - int(columns.group(2)) * (count - 1)) // count
@@ -534,44 +538,136 @@ def _number_value(text: str) -> float | None:
     return float(found.group(1).replace("−", "-").replace(",", "")) if found else None
 
 
-def choice_order_notes(named: list) -> list[str]:
-    """계단식(짧은 것부터 긴 것)이 아닌 선지와, ①~⑤ 정답 수가 고르지 않은 분포를 알린다.
+EXACT_NUMBER = re.compile(r"([-−]?)\s*(?:(\d+)\s+)?(\d+)\s*/\s*(\d+)|([-−]?\d+(?:[.,]\d+)?)")
 
-    표지(㉠, (가), 갑…)로 시작하는 선지, 합답형(ㄱ, ㄴ…) 선지는 길이로 보지 않는다. 수 선지는 작은 수부터인지 본다."""
+
+def _exact_value(raw: object) -> Fraction | None:
+    """정수·소수·분수·대분수(음수 포함)를 정확한 값으로 읽는다. {{3/4}}, {{1 7/12}}, {{-2/3}}처럼 한글 수식 꼴도 받는다.
+    제곱근 같은 수식이나 단위가 붙은 글은 읽지 못해 None."""
+    text = _choice_plain(raw)
+    found = EXACT_NUMBER.fullmatch(text)
+    if found is None:
+        return None
+    sign, whole, top, bottom, plain = found.groups()
+    if plain is not None:
+        return Fraction(plain.replace("−", "-").replace(",", ""))
+    if int(bottom) == 0:
+        return None
+    value = Fraction(int(whole or 0) * int(bottom) + int(top), int(bottom))
+    return -value if sign else value
+
+
+def _has_math(raw: object) -> bool:
+    return "{{" in str(raw)
+
+
+PAIR_SPLIT = re.compile(r"\s[-–—]\s")       # "(A) - (B)"처럼 칸을 나눈 짝 선지
+
+
+def _heads_grouped(texts: list[str]) -> bool:
+    """짝 선지의 앞 칸이 같은 것끼리 이어져 있는가 (cools, cools, warms, cleans, warms는 아니다)."""
+    heads = [PAIR_SPLIT.split(text, maxsplit=1)[0].strip() for text in texts]
+    seen: set[str] = set()
+    for index, head in enumerate(heads):
+        if head in seen and heads[index - 1] != head:
+            return False
+        seen.add(head)
+    return True
+
+
+REPEAT_MIN = 4                              # 되풀이로 볼 가장 짧은 정답 번호 순서
+REPEAT_CHANCE = 0.1                         # 무작위 배열에서 우연히 되풀이가 나올 어림 확률이 이보다 크면 길이를 늘린다
+
+
+def _repeat_min(count: int, size: int) -> int:
+    """우연한 되풀이 알림을 줄이는 최소 길이. 20문항 5지선다는 5, 4지선다는 6 (무작위 2000회 흉내로 알림 비율을 확인)."""
+    length = REPEAT_MIN
+    while length < count and (count - length) ** 2 / 2 * size ** -length > REPEAT_CHANCE:
+        length += 1
+    return length
+
+
+def _repeated_run(sequence: list[int], shortest: int = REPEAT_MIN) -> tuple[int, int, int] | None:
+    """겹치지 않고 두 번 나오는 가장 긴 정답 번호 순서 (길이, 첫 자리, 둘째 자리). shortest보다 짧거나
+    한 번호만 이어진 순서(③③③③, "이어짐" 알림이 따로 있음)면 None."""
+    for length in range(len(sequence) // 2, shortest - 1, -1):
+        for first in range(len(sequence) - 2 * length + 1):
+            run = sequence[first:first + length]
+            if len(set(run)) == 1:
+                continue
+            for second in range(first + length, len(sequence) - length + 1):
+                if sequence[second:second + length] == run:
+                    return length, first, second
+    return None
+
+
+def _order_note(where: str, choices: list) -> str | None:
+    """선지 순서 알림 한 줄. 표지·합답형은 보지 않고, 수 선지는 크기, 짝 선지는 앞 칸 묶음, 나머지는 계단식을 본다."""
+    texts = [_choice_plain(choice) for choice in choices]
+    if any(LABEL_START.match(text) for text in texts) or all(CONSONANT_SET.match(text) for text in texts):
+        return None
+    exact = [_exact_value(choice) for choice in choices]
+    if all(value is not None for value in exact):
+        return None if exact == sorted(exact) else f"{where}: 수 선지는 작은 수부터 놓아 주세요"
+    if any(_has_math(choice) for choice in choices):
+        return None                             # 값으로 읽지 못하는 수식(제곱근 등)이 섞이면 순서를 점검하지 않는다
+    if all(NUMBER_CHOICE.match(text) for text in texts):
+        values = [_number_value(text) for text in texts]
+        bad = all(value is not None for value in values) and values != sorted(values)
+        return f"{where}: 수 선지는 작은 수부터 놓아 주세요" if bad else None
+    if all(PAIR_SPLIT.search(text) for text in texts):
+        return None if _heads_grouped(texts) else f"{where}: 짝 선지는 앞 칸이 같은 것끼리 붙여 놓아 주세요"
+    widths = [_text_width(text, 1) for text in texts]
+    if any(later < earlier - STEP_SLACK for earlier, later in zip(widths, widths[1:])):
+        return f"{where}: 선지를 짧은 것부터 긴 것 순서(계단식)로 놓아 주세요. 정답 자리는 오답 길이를 고쳐 맞춥니다"
+    return None
+
+
+def _answer_notes(answered: list[tuple[str, int, int]]) -> list[str]:
+    """(문항 이름, 선지 수, 정답) 목록으로 같은 번호 이어짐, 순서 되풀이, 번호 분포를 알린다."""
     notes: list[str] = []
-    counts: dict[int, Counter] = {}
-    run_answer: int | None = None               # 같은 번호 이어짐은 선지 수와 상관없이 문항 순서대로 센다
-    run_length = 0
-    for where, item in named:
-        choices = item.get("choices")
-        if not choices or item.get("type") not in (SHORT_TABLE, COMBO_TABLE, PARAGRAPHS):
-            continue
-        texts = [_choice_plain(choice) for choice in choices]
-        answer = item.get("answer")
-        size = len(texts)                       # 분포는 3·4·5지선다를 따로 센다
-        if isinstance(answer, int) and size >= 3:
-            counts.setdefault(size, Counter())[answer] += 1
-            run_length = run_length + 1 if answer == run_answer else 1
-            run_answer = answer
-            if run_length == 4:
-                notes.append(f"{where}: 정답 {CIRCLED[answer - 1]}이 4문항 이어짐. 자리를 바꿔 주세요")
-        if any(LABEL_START.match(text) for text in texts) or all(CONSONANT_SET.match(text) for text in texts):
-            continue
-        if all(NUMBER_CHOICE.match(text) for text in texts):
-            values = [_number_value(text) for text in texts]
-            if all(value is not None for value in values) and values != sorted(values):
-                notes.append(f"{where}: 수 선지는 작은 수부터 놓아 주세요")
-            continue
-        widths = [_text_width(text, 1) for text in texts]
-        if any(later < earlier - STEP_SLACK for earlier, later in zip(widths, widths[1:])):
-            notes.append(f"{where}: 선지를 짧은 것부터 긴 것 순서(계단식)로 놓아 주세요. 정답 자리는 오답 길이를 고쳐 맞춥니다")
-    for size, group in sorted(counts.items()):
-        if sum(group.values()) >= 5 and max(group.get(n, 0) for n in range(1, size + 1)) - min(
-                group.get(n, 0) for n in range(1, size + 1)) > 1:
+    run_length, run_answer = 0, None
+    for where, _, answer in answered:          # 이어짐은 선지 수와 상관없이 문항 순서대로 센다
+        run_length = run_length + 1 if answer == run_answer else 1
+        run_answer = answer
+        if run_length == 4:
+            notes.append(f"{where}: 정답 {CIRCLED[answer - 1]}이 4문항 이어짐. 자리를 바꿔 주세요")
+    sequence = [answer for _, _, answer in answered]
+    sizes = Counter(size for _, size, _ in answered)
+    shortest = _repeat_min(len(sequence), sizes.most_common(1)[0][0]) if sizes else REPEAT_MIN
+    repeat = _repeated_run(sequence, shortest)
+    if repeat:
+        length, first, second = repeat
+        shown = "".join(CIRCLED[answer - 1] for answer in sequence[first:first + length])
+        spans = [f"{answered[start][0]}~{answered[start + length - 1][0]}" for start in (first, second)]   # 실제 문항 이름
+        notes.append(f"정답 번호 {shown}가 {spans[0]}과 {spans[1]}에서 같은 순서로 되풀이됨. 한쪽의 선지 자리를 바꿔 주세요")
+    for size in sorted(sizes):
+        group = Counter(answer for _, item_size, answer in answered if item_size == size)
+        spread_values = [group.get(n, 0) for n in range(1, size + 1)]
+        if sum(spread_values) >= 5 and max(spread_values) - min(spread_values) > 1:
             spread = " ".join(f"{CIRCLED[n - 1]}{group.get(n, 0)}" for n in range(1, size + 1))
             kind = "" if size == 5 else f"{size}지선다 "
             notes.append(f"{kind}정답 번호 분포가 고르지 않음({spread}). 번호마다 개수 차이가 1을 넘지 않게 맞춰 주세요")
     return notes
+
+
+def choice_order_notes(named: list) -> list[str]:
+    """선지 순서(계단식·수 크기·짝 선지 묶음)와 정답 번호(이어짐·되풀이·분포)를 알린다.
+
+    표지(㉠, (가), 갑…)로 시작하는 선지, 합답형(ㄱ, ㄴ…) 선지는 길이로 보지 않는다."""
+    notes: list[str] = []
+    answered: list[tuple[str, int, int]] = []
+    for where, item in named:
+        choices = item.get("choices")
+        if not choices or item.get("type") not in (SHORT_TABLE, COMBO_TABLE, PARAGRAPHS):
+            continue
+        answer = item.get("answer")
+        if isinstance(answer, int) and len(choices) >= 3:
+            answered.append((where, len(choices), answer))
+        note = _order_note(where, choices)
+        if note:
+            notes.append(note)
+    return notes + _answer_notes(answered)
 
 
 # ---------------------------------------------------------------- 꼬리말 쪽 번호

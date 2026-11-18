@@ -24,19 +24,29 @@
     {"type": "grid_table", "stem": "문제", "points": 3, "head": ["ⓐ", "ⓑ"],
      "rows": [["가", "나"], ["가", "다"], ["나", "다"], ["나", "라"], ["다", "라"]], "answer": 1},
     {"type": "paragraphs", "stem": "문제", "points": 4, "box": "자료 글", "choices": ["긴 문장 다섯 개"], "answer": 5},
+    {"type": "combo_table", "stem": "문제", "points": 3, "layout": "5x1",
+     "dialogue": [{"who": "교사", "figure": "teacher_f", "text": "말"}, {"who": "갑", "text": "말"}],
+     "choices": ["가", "나", "다", "라", "마"], "answer": 4},
+    {"type": "combo_table", "stem": "문제", "points": 3, "picture": {"file": "그래프.png", "width_mm": 60},
+     "choices": ["가", "나", "다", "라", "마"], "answer": 1},
     {"type": "written", "stem": "서답형 문제", "points": 5}
   ]
 }
 
 - 번호는 다시 매긴다. stem과 choices에 번호와 ①를 쓰지 않아도 된다 (써도 지운다).
 - box(자료 상자)와 bogi(<보기>)는 어느 선택지 유형에나 더할 수 있다. box는 글 하나나 문단 목록이다.
-- 같은 유형·선택지 수의 틀이 여럿이면 "layout": "5x1"(선지 표 행x칸)로 고른다. 없으면 <보기> 유무가 맞는 틀,
-  그다음 첫 틀을 쓴다. 맞는 layout이 없으면 다른 배치를 쓰고 알린다.
+- 같은 유형·선택지 수의 틀이 여럿이면 "layout": "5x1"(선지 표 행x칸)로 고른다. 없으면 가장 긴 선지의 폭으로 1x5 → 2x3 → 5x1 중
+  가장 좁은 틀을 고르고(fill_exam_text.py), <보기> 유무가 맞는 틀을 쓴다. 맞는 layout이 없으면 다른 배치를 쓰고 알린다.
+- box와 passage 글은 문단마다 모양이 맞춰진다: 표지(교사:, (가), ○, ㄱ.)는 내어쓰기, 출처·각주는 오른쪽 정렬, 줄글은 첫 줄 들여쓰기.
 - 자료 상자는 1칸 표나, 여백 칸으로 둘러싼 3x3 이하 표(글이 든 칸이 하나뿐)다. 글은 그 본문 칸에 들어간다.
-- 문제 끝 배점이 줄 끝에 걸려 "[3 / 점]"으로 쪼개질 것 같으면 배점 앞에서 줄을 바꾼다(단 너비로 어림).
+- 문제 끝 배점("[3점]")은 마지막 낱말과 묶음 빈칸으로 붙인다. 자리가 모자라면 "것은? [3점]"이 함께 다음 줄로 간다.
 - 선택지가 틀보다 적으면(4지·3지선다) 5개짜리 선지 틀의 남는 칸을 지워 쓴다. layout은 줄인 뒤의 행x칸이다. 5지 틀의 이름(2x3, 5x1, 1x5)도 줄인 배치(2x2, 4x1, 1x4)로 받는다 (fill_exam_reshape.py).
+- 빈칸은 ___(밑줄 문자 3개 이상)로 쓰면 실선 빈칸(밑줄 친 전각 빈칸)이 된다.
 - 글에는 **굵게**, __밑줄__, {{2/3}}(한글 수식)을 쓸 수 있다. \\n은 같은 문단의 줄바꿈이다.
-- 그림은 넣을 수 없다. 틀이 없는 유형이나 선택지 수가 틀보다 많거나 줄일 수 없는 문항은 한 번에 모아 오류로 알린다.
+- dialogue(대화 장면: 인물 그림 위 말풍선)와 picture(그림 파일)를 어느 선택지 유형에나 더할 수 있다.
+  그림의 상대 경로는 지시 JSON이 있는 폴더에서 먼저 찾고 없으면 실행한 폴더에서 찾는다. 쓰는 법은 fill_exam_media.py 상단 설명. 순서는 문제 → picture → box → table → dialogue → bogi → 선택지다.
+  table(칸 있는 표)과 picture 목록(그림 두 장 나란히)은 fill_exam_grid.py 상단 설명.
+- 틀이 없는 유형이나 선택지 수가 틀보다 많거나 줄일 수 없는 문항은 한 번에 모아 오류로 알린다.
 - 문제가 하나라도 있으면 파일을 만들지 않는다.
 """
 
@@ -53,10 +63,15 @@ from xml.sax.saxutils import unescape
 
 from fill_exam_parse import _column_width, _last_line_room, _text_width  # noqa: F401  (시험에서도 씀)
 from fill_exam_parse import (box_body, choice_order_notes, fill_page_numbers, 
-    CIRCLED, COMBO_TABLE, GRID_TABLE, ITEM_START, KIND_NAMES, PARAGRAPHS, POINTS_AT_END, SHORT_TABLE, WRITTEN,
+    CIRCLED, COMBO_TABLE, GRID_TABLE, ITEM_START, PARAGRAPHS, POINTS_AT_END, SHORT_TABLE, WRITTEN,
     CharShapes, ExamForm, Frame, PassageFrame, TableBlock, bogi_body, choice_cells, inspect_exam, is_bogi_label,
     plainest, read_exam, run_counts)
-from fill_exam_reshape import MIN_CHOICES, reshape_table_xml, reshaped_layout
+from fill_exam_grid import picture_parts, table_parts
+from fill_exam_media import MANIFEST, Media, add_pictures, split_blanks
+from fill_exam_frames import _pick_frame, _reduced
+from fill_exam_reshape import reshape_table_xml
+from fill_exam_rows import fit_choice_rows
+from fill_exam_text import TextShapes, glue_marker
 from make_hwpx_save import BLANK_PNG, PREVIEW_IMAGE, file_error_message
 from fill_hwpx import (
     Edit, FillError, Form, apply_edits, changed_entries, is_count, is_text, plan_edits, publish, read_form, validate_spec)
@@ -69,9 +84,9 @@ from fill_exam_spec import (  # noqa: F401  (시험과 다른 모듈도 여기�
     _texts, _validate)
 
 HEADER_ENTRY = "Contents/header.xml"
-NEAREST = {SHORT_TABLE: COMBO_TABLE, COMBO_TABLE: SHORT_TABLE}
+NBSP = "\u00a0"                     # 한글 묶음 빈칸(hp:nbSpace)으로 바꿔 쓴다
 CHAR_WIDTH = 1000                       # 10pt 글자 하나의 폭 어림 (HWPUNIT)
-CELL_SIDE_MARGIN = 510                  # 칸 왼쪽·오른쪽 안 여백 어림
+CELL_SIDE_MARGIN = 326                  # 칸 안 여백 어림 (기본 원안지 선지 칸: 왼쪽 510 + 오른쪽 141의 반)
 CHOICE_SLACK = 1.05                     # 선택지 폭 어림의 여유 (한글에서 칸에 들어간 것과 쪼개진 것으로 맞춤)
 MIN_ROW_HEIGHT = 300                    # 글이 드는 행의 최소 높이. 한글이 글에 맞춰 늘린다
 MIN_OLD_TEXT = 8                        # 이보다 짧은 글(<보 기> 같은 이름표)은 옛 글 검사에서 뺀다
@@ -101,106 +116,13 @@ class Result:
 
 
 
-# ---------------------------------------------------------------- 틀 고르기
-
-def _shape_of(frame: Frame) -> tuple[int, int]:
-    """(선택지 수, 표형 선지의 내용 칸 수)."""
-    columns = frame.choice_table.table.cols - 1 if frame.kind == GRID_TABLE else 0
-    return len(frame.slots), columns
-
-
-def _wanted_shape(item: dict) -> tuple[int, int]:
-    if item["type"] == GRID_TABLE:
-        return len(item["rows"]), len(item["head"])
-    return len(item.get("choices", ())), 0
-
-
-def _reduced(frame: Frame, count: int) -> tuple[int, int] | None:
-    """선택지 count개로 줄인 선지 표의 (행, 칸). 표가 아니거나 줄일 수 없으면 None."""
-    if frame.kind not in (SHORT_TABLE, COMBO_TABLE):
-        return None
-    return reshaped_layout(frame.choice_table.table, len(frame.slots), count)
-
-
-def _can_reduce(frame: Frame, count: int) -> bool:
-    """틀의 선택지 자리보다 적은 선택지(2개 이상)를 담도록 줄일 수 있는가."""
-    if frame.kind == PARAGRAPHS:
-        return MIN_CHOICES <= count < len(frame.slots)
-    return _reduced(frame, count) is not None
-
-
-def _layout_of(frame: Frame, count: int) -> str | None:
-    """선택지 count개를 넣은 뒤 선지 표의 "행x칸". 표가 아니면 None."""
-    if frame.choice_table is None:
-        return None
-    rows, cols = _reduced(frame, count) or (frame.choice_table.table.rows, frame.choice_table.table.cols)
-    return f"{rows}x{cols}"
-
-
-def _original_layout(frame: Frame) -> str | None:
-    """줄이기 전 틀의 선지 표 "행x칸". 표가 아니면 None."""
-    if frame.choice_table is None:
-        return None
-    table = frame.choice_table.table
-    return f"{table.rows}x{table.cols}"
-
-
-def _layout_matches(frame: Frame, count: int, wanted: str) -> bool:
-    """줄인 뒤의 행x칸이거나, 줄이기 전 틀의 이름(5지 이름 2x3·5x1·1x5)이면 맞는 것으로 본다."""
-    return wanted in (_layout_of(frame, count), _original_layout(frame))
-
-
-def _prefer(fits: list[Frame], item: dict, where: str, notes: list[str]) -> Frame:
-    """같은 유형·선택지 수의 틀이 여럿이면 layout(선지 표 행x칸)이 맞는 틀, 그다음 <보기> 유무가 맞는 틀을 고른다."""
-    wanted = re.sub(r"\s", "", str(item.get("layout", ""))).lower().replace("×", "x")
-    count = len(item.get("choices", ()))
-    if wanted:
-        matched = [frame for frame in fits if _layout_matches(frame, count, wanted)]
-        if matched:
-            fits = matched
-        else:
-            have = ", ".join(sorted({_layout_of(frame, count) or "문단" for frame in fits}))
-            notes.append(f"{where}: layout {wanted} 틀이 없어 양식의 다른 배치({have})를 썼습니다")
-    with_bogi = "bogi" in item
-    return next((frame for frame in fits if (frame.bogi is not None) == with_bogi), fits[0])
-
-
-def _pick_frame(exam: ExamForm, item: dict, where: str, notes: list[str]) -> Frame:
-    kind = item["type"]
-    kinds = [kind, NEAREST[kind]] if kind in NEAREST else [kind]
-    if not any(exam.frame_of(name) for name in kinds):
-        have = ", ".join(sorted({frame.kind for frame in exam.frames}))
-        raise FillError(f"{where}: 양식에 {kind}({KIND_NAMES[kind]}) 틀이 없음. 양식의 유형: {have}. "
-                        "유형을 양식에 있는 것으로 바꾸거나, 그 유형이 든 양식을 교사에게 받아 주세요")
-    wanted = _wanted_shape(item)
-    for name in kinds:
-        fits = [frame for frame in exam.frames if frame.kind == name and (kind == WRITTEN or _shape_of(frame) == wanted)]
-        if fits:
-            frame = _prefer(fits, item, where, notes)
-            if name != kind:
-                notes.append(f"{where}: {kind} 틀이 없어 가장 가까운 {name} 틀을 썼습니다")
-            return frame
-    for name in kinds:                          # 맞는 수의 틀이 없으면 더 많은 선택지의 틀을 줄여 쓴다 (4지·3지선다)
-        fits = [frame for frame in exam.frames if frame.kind == name and kind != GRID_TABLE
-                and _can_reduce(frame, wanted[0])]
-        if fits:
-            nearest = min(len(frame.slots) for frame in fits)
-            frame = _prefer([frame for frame in fits if len(frame.slots) == nearest], item, where, notes)
-            if name != kind:
-                notes.append(f"{where}: {kind} 틀이 없어 가장 가까운 {name} 틀을 썼습니다")
-            return frame
-    shapes = sorted({_shape_of(frame) for name in kinds for frame in exam.frames if frame.kind == name})
-    counts = ", ".join(f"{count}개" + (f"(내용 {cols}칸)" if cols else "") for count, cols in shapes)
-    asked = f"{wanted[0]}개" + (f"(내용 {wanted[1]}칸)" if wanted[1] else "")
-    raise FillError(f"{where}: 선택지가 {asked}인데 양식의 {kind} 틀은 {counts}임. 표 구조는 바꾸지 않습니다")
-
-
 # ---------------------------------------------------------------- 글 쓰기
 
 class Writer:
     """틀의 원문을 복제해 새 글을 쓴다. 문단과 글자 모양 번호는 양식의 것만 쓴다."""
 
-    def __init__(self, exam: ExamForm, xml: str, header_xml: str, student: bool) -> None:
+    def __init__(self, exam: ExamForm, xml: str, header_xml: str, student: bool, manifest: str = "",
+                 base_dir: Path | None = None) -> None:
         self.exam = exam
         self.xml = xml
         self.shapes = CharShapes(header_xml)
@@ -214,7 +136,10 @@ class Writer:
         self.keep_failed = False                # "다음 문단과 함께"를 켤 자리를 찾지 못했다
         self.new_shapes: list[str] = []
         self.header_xml = header_xml
-        self.column_width = _column_width(xml)
+        first_end = xml.find("</hp:p>", exam.body_start)             # 첫 문항 문단의 단 설정까지 읽는다
+        self.column_width = _column_width(xml, first_end if first_end != -1 else exam.body_end)
+        self.media = Media(self, manifest, base_dir)
+        self.text = TextShapes(self)
 
     def _kept_controls(self) -> str:
         """첫 문항 문단에 있던 구역·단 설정. 문단을 새로 써도 잃으면 안 된다."""
@@ -228,6 +153,19 @@ class Writer:
         return plainest(sum((run_counts(p, self.xml, first) for p in paragraphs), Counter()), self.shapes)
 
     def _styled(self, text: str, char: str) -> list[tuple[str, str]]:
+        """___(밑줄 문자 3개 이상)은 밑줄 친 전각 빈칸으로 바꾸고, 나머지는 _marked로 읽는다."""
+        pieces: list[tuple[str, str]] = []
+        for part, is_blank in split_blanks(text):
+            if not is_blank:
+                pieces += self._marked(part, char)
+                continue
+            variant = self.shapes.variant(char, False, True)
+            if variant is None:
+                raise FillError("양식에 같은 글꼴의 밑줄 글자 모양이 없어 빈칸(___)을 넣을 수 없음")
+            pieces.append((part, variant))
+        return pieces
+
+    def _marked(self, text: str, char: str) -> list[tuple[str, str]]:
         """글을 (조각, 글자 모양) 목록으로 나눈다. **굵게**와 __밑줄__은 양식의 같은 글꼴을 찾아 쓴다."""
         pieces: list[tuple[str, str]] = []
         position = 0
@@ -245,8 +183,8 @@ class Writer:
 
     def _equation(self, part: str, char: str) -> str:
         script = equation_script(_clean(part))
-        body = equation_xml(next(self.ids), script).replace('zOrder="0"', f'zOrder="{next(self.orders)}"', 1)
-        body = body.replace('baseUnit="1100"', f'baseUnit="{self.shapes.height(char)}"', 1)
+        body = equation_xml(next(self.ids), script, base_unit=self.shapes.height(char))
+        body = body.replace('zOrder="0"', f'zOrder="{next(self.orders)}"', 1)
         return f'<hp:run charPrIDRef="{char}">{body}<hp:t/></hp:run>'
 
     def runs(self, text: str, char: str, answer: bool = False) -> str:
@@ -263,15 +201,18 @@ class Writer:
             begin = f'<hp:run charPrIDRef="{char}"><hp:t><hp:markpenBegin color="{self.mark.value}"/></hp:t></hp:run>'
             end = f'<hp:run charPrIDRef="{char}"><hp:t><hp:markpenEnd/></hp:t></hp:run>'
             output = [begin, *output, end]
-        return "".join(output)
+        return "".join(output).replace(NBSP, "<hp:nbSpace/>")
 
     # 문단
     def _open(self, paragraph: Paragraph) -> str:
         tag = self.xml[paragraph.start:self.xml.index(">", paragraph.start) + 1]
         return re.sub(r'\b(pageBreak|columnBreak)="1"', r'\1="0"', tag)
 
-    def paragraph(self, template: Paragraph, runs: str) -> str:
-        return f"{self._open(template)}{runs}</hp:p>"
+    def paragraph(self, template: Paragraph, runs: str, shape: str | None = None) -> str:
+        opening = self._open(template)         # shape: 이 문단만 쓸 문단 모양 번호 (fill_exam_text.py)
+        if shape:
+            opening = PARA_REF.sub(lambda m: f"{m.group(1)}{shape}{m.group(3)}", opening, count=1)
+        return f"{opening}{runs}</hp:p>"
 
     def blank(self, template: Paragraph | None) -> str:
         if template is None:
@@ -279,17 +220,21 @@ class Writer:
         return self.paragraph(template, self.runs("", self._main([template])))
 
     def _keep_shape(self, number: str) -> str:
-        """같은 모양에 "다음 문단과 함께"만 켠 문단 모양. 문제와 선택지가 단 끝에서 갈라지지 않게 한다."""
+        """같은 모양에 "다음 문단과 함께"와 "문단 보호"만 켠 문단 모양.
+
+        문제와 선택지가 단 끝에서 갈라지지 않게 하고, 문두 문단 하나가 두 단에 쪼개지지 않게 한다."""
         if number not in self.keep_shapes:
             shape = self.para_shapes.get(number, "")
-            if not shape or 'keepWithNext="1"' in shape:
+            if not shape or ('keepWithNext="1"' in shape and 'keepLines="0"' not in shape):
                 self.keep_shapes[number] = number
             else:
                 new = str(next(self.next_shape))
                 self.keep_shapes[number] = new
                 shape = PARA_SHAPE_ID.sub(rf"\g<1>{new}", shape, count=1)
-                self.keep_failed = self.keep_failed or 'keepWithNext="0"' not in shape
-                self.new_shapes.append(shape.replace('keepWithNext="0"', 'keepWithNext="1"', 1))
+                self.keep_failed = self.keep_failed or ('keepWithNext="0"' not in shape
+                                                        and 'keepWithNext="1"' not in shape)
+                shape = shape.replace('keepWithNext="0"', 'keepWithNext="1"', 1)
+                self.new_shapes.append(shape.replace('keepLines="0"', 'keepLines="1"', 1))
         return self.keep_shapes[number]
 
     def _together(self, parts: list[str]) -> str:
@@ -317,36 +262,18 @@ class Writer:
         number_char = self._main([_slice(frame.stem, found.start(2), found.end(2))])
         body_char = self._main([frame.stem], found.end(3))
         label = f"{text[:found.start(2)]}{number}{text[found.end(2):found.end(3)]}"
-        body = self._keep_points(frame, f"{label} ", _stem_text(item, frame), body_char)
-        return self.paragraph(frame.stem, self._take_controls(number_char) + self.runs(label, number_char)
-                              + self.runs(f" {body}", body_char))
-
-    def _keep_points(self, frame: Frame, label: str, body: str, char: str) -> str:
-        """끝의 배점이 줄 끝에 걸려 쪼개질 것 같으면 배점 앞에서 줄을 바꾼다."""
-        found = POINTS_AT_END.search(body)
-        if found is None or self.column_width is None or "\n" in body:
-            return body
-        opening = self.xml[frame.stem.start:self.xml.index(">", frame.stem.start)]
-        shape_ref = re.search(r'paraPrIDRef="(\d+)"', opening)     # 없으면 기본 문단 모양(들여쓰기 없음)
-        shape = self.para_shapes.get(shape_ref.group(1), "") if shape_ref else ""
-        intent = re.search(r'<hc:intent value="(-?\d+)"', shape)
-        left = re.search(r'<hc:left value="(-?\d+)"', shape)
-        indent = (abs(int(intent.group(1))) if intent and int(intent.group(1)) < 0 else 0) + (int(left.group(1)) if left else 0)
-        size = re.search(rf'<hh:charPr id="{char}" height="(\d+)"', self.header_xml)
-        em = int(size.group(1)) if size else CHAR_WIDTH
-        text, points = body[:found.start()].rstrip(), body[found.start():].strip()
-        room = _last_line_room(label + text, self.column_width, indent, em)
-        if room < _text_width(" " + points, em) + em:
-            return f"{text}\n{points}"
-        return body
+        body = _keep_points(_stem_text(item, frame))
+        runs = self.runs(f" {body}", body_char)
+        return self.paragraph(frame.stem, self._take_controls(number_char) + self.runs(label, number_char) + runs)
 
     # 표
-    def _cell(self, paragraphs: list[Paragraph], texts: list[str], char: str | None, answer: bool = False) -> str:
+    def _cell(self, paragraphs: list[Paragraph], texts: list[str], char: str | None, answer: bool = False,
+              shapes: list[str | None] | None = None) -> str:
         pieces = []
         for index, text in enumerate(texts):
             template = paragraphs[min(index, len(paragraphs) - 1)]
             use = char or self._main([template])
-            pieces.append(self.paragraph(template, self.runs(text, use, answer)))
+            pieces.append(self.paragraph(template, self.runs(text, use, answer), shapes[index] if shapes else None))
         return "".join(pieces)
 
     def table(self, block: TableBlock, writes: dict[tuple[int, int], str], shrink: int | None = None) -> str:
@@ -374,15 +301,15 @@ class Writer:
     def box(self, value: object) -> str:
         block = self.exam.box
         cell = box_body(block.table)
-        texts = [_plain(text) for text in value] if isinstance(value, list) else [_plain(value)]
-        return self._text_block(block, cell, texts)
+        texts = [glue_marker(_plain(text)) for text in (value if isinstance(value, list) else [value])]
+        return self._text_block(block, cell, texts, self.text.box_shapes(cell.paragraphs, texts, self._main(cell.paragraphs)))
 
-    def _text_block(self, block: TableBlock, cell: Cell, texts: list[str]) -> str:
-        new = self._cell(cell.paragraphs, texts, self._main(cell.paragraphs))
+    def _text_block(self, block: TableBlock, cell: Cell, texts: list[str], shapes: list[str | None] | None = None) -> str:
+        new = self._cell(cell.paragraphs, texts, self._main(cell.paragraphs), shapes=shapes)
         return self.table(block, {(cell.row, cell.col): new}, cell.row)
 
     def bogi(self, statements: list, notes: list[str], where: str) -> str:
-        texts = [_bogi_line(index, text) for index, text in enumerate(statements)]
+        texts = [glue_marker(_bogi_line(index, text)) for index, text in enumerate(statements)]
         block = self.exam.bogi
         if block is None:
             if self.exam.box is None:
@@ -411,7 +338,7 @@ class Writer:
         if size is not None:                    # 4지·3지선다: 남는 칸을 지우고 표를 다시 짠다
             old = frame.choice_table.table
             table = reshape_table_xml(table, (old.rows, old.cols), size, len(texts))
-        return [table]
+        return [fit_choice_rows(table, self.shapes.height(char), self.para_shapes)]   # 한글은 열 때 선지 칸 높이를 다시 재지 않는다
 
     def _grid(self, frame: Frame, item: dict) -> str:
         table = frame.choice_table.table
@@ -434,10 +361,16 @@ class Writer:
             if frame.box:
                 parts.append(self.table(frame.box, {}))
             return self._together(parts) + self.blank(frame.spacer or self.exam.spacer)
+        if "picture" in item:
+            parts += picture_parts(self.media, item["picture"], frame.stem, where)
         if "box" in item:
             if self.exam.box is None:
                 raise FillError(f"{where}: 양식에 자료 상자 틀이 없음")
             parts.append(self.box(item["box"]))
+        if "table" in item:
+            parts += table_parts(self.media, item["table"], frame.stem, where, notes)
+        if "dialogue" in item:
+            parts.append(self.media.dialogue(item["dialogue"], frame.stem, where, item.get("dialogue_layout")))
         if "bogi" in item:
             parts.append(self.bogi(item["bogi"], notes, where))
         parts += self.choices(frame, item)
@@ -473,7 +406,9 @@ class Writer:
         if not frame.bodies:
             raise FillError("양식의 지문 틀에 본문 문단이 없음")
         template = frame.bodies[min(index, len(frame.bodies) - 1)]
-        parts.append(self.paragraph(template, self.runs(_plain(text), self._main([template]))))
+        char, body = self._main([template]), _plain(text)
+        shape = self.text.shape_for(template, body, True, self.media._em(char), keep_own=False)
+        parts.append(self.paragraph(template, self.runs(body, char), shape))
         return "".join(parts)
 
 
@@ -526,16 +461,38 @@ def _stem_text(item: dict, frame: Frame) -> str:
     text = re.sub(r"^\s*\d{1,3}\s*\.\s+", "", _plain(item["stem"])).rstrip()
     wants_points = POINTS_AT_END.search(frame.stem.text) is not None
     if "points" in item:
-        return f"{text} [{item['points']}점]"
+        written = POINTS_AT_END.search(text)
+        if written is None:
+            return f"{text} [{item['points']}점]"
+        if _points_value(written.group(0)) != float(item["points"]):
+            raise FillError(f"문제 글의 배점 {written.group(0).strip()}과 points {item['points']}가 다릅니다. 하나로 맞춰 주세요")
+        return text                             # 글에 같은 배점이 이미 있으면 다시 붙이지 않는다
     if wants_points and not POINTS_AT_END.search(text):
         raise FillError("양식이 문제 끝에 배점을 적습니다. points를 적어 주세요")
     return text
 
 
+def _points_value(label: str) -> float:
+    return float(re.search(r"\d+(?:\.\d+)?", label).group(0))
+
+
+def _keep_points(body: str) -> str:
+    """끝의 배점("[5점]") 앞을 보통 빈칸 하나로 맞춘다.
+
+    묶음 빈칸으로 붙이면 "것은? [5점]"이 한 덩어리로 다음 줄로 내려가 윗줄 끝이 비었다(교사 지적 2026-11-18:
+    "단락을 마음대로 떨궈 버리니까 어색해 … 사용자가 편집할 수 있게"). 글이 자연스럽게 흐르게 두고,
+    배점이 혼자 떨어지면 교사가 한글에서 고친다. 줄을 강제로 바꾸지 않는다."""
+    found = POINTS_AT_END.search(body)
+    if found is None or "\n" in body[found.start():]:
+        return body
+    return f"{body[:found.start()].rstrip()} {body[found.start():].strip()}"
+
+
 def _shrink_row(whole: str, row: int) -> str:
     """새 글이 옛 글보다 짧아도 상자가 옛 높이로 남지 않게 글이 드는 행의 높이를 줄인다.
 
-    한글은 칸 높이를 최소값으로 보고 글에 맞춰 늘리므로 작게 두어도 글이 잘리지 않는다 (한글에서 확인)."""
+    칸이 하나인 자료 상자·<보기>는 한글이 칸 높이를 최소값으로 보고 글에 맞춰 늘려 글이 잘리지 않았다 (한글에서 확인).
+    여러 행인 선지 표는 열 때 늘리지 않아서 fill_exam_rows.fit_choice_rows가 높이를 정한다 (한글에서 확인)."""
     pieces = whole.split("<hp:tr>")
     heights = (_attribute(found.group(0), "height") or 0 for found in CELL_SIZE.finditer(pieces[row + 1]))
     removed = max(heights, default=MIN_ROW_HEIGHT)
@@ -670,8 +627,10 @@ def _strip_marks(entries: dict[str, bytes], names: tuple[str, ...]) -> dict[str,
     return cleaned
 
 
-def fill_exam(source: Path, spec: dict, target: Path, student: bool = False) -> Result:
-    """양식의 문항 틀을 복제해 target에 새 파일을 만든다. 실패하면 FillError."""
+def fill_exam(source: Path, spec: dict, target: Path, student: bool = False, base_dir: Path | None = None) -> Result:
+    """양식의 문항 틀을 복제해 target에 새 파일을 만든다. 실패하면 FillError.
+
+    그림의 상대 경로는 base_dir(지시 파일이 있는 폴더)에서 먼저 찾고, 없으면 실행한 폴더에서 찾는다."""
     source, target = Path(source), Path(target)
     if target.exists():
         if source.exists() and target.samefile(source):
@@ -686,14 +645,15 @@ def fill_exam(source: Path, spec: dict, target: Path, student: bool = False) -> 
     header_xml = form.entries[HEADER_ENTRY].decode("utf-8")
     notes = list(equation_text_warnings(spec.get("items")))
     notes += choice_order_notes(named)
-    writer = Writer(exam, xml, header_xml, student)
+    manifest = form.entries.get(MANIFEST, b"").decode("utf-8", "ignore")
+    writer = Writer(exam, xml, header_xml, student, manifest, base_dir)
     body, count = _build_body(writer, named, notes)
     if writer.keep_failed:
         notes.append(NO_KEEP_NOTE)
     outside = _outside_plan(form, exam, fills)
     notes += _head_notes(form, exam, outside, named, count)
     entries = changed_entries(form, [*outside, Edit(exam.section, exam.body_start, exam.body_end, body)])
-    entries[HEADER_ENTRY] = writer.header_with_shapes(header_xml).encode("utf-8")
+    entries[HEADER_ENTRY] = writer.media.header(writer.header_with_shapes(header_xml)).encode("utf-8")
     _check_no_old_text(form, exam, body, spec)
     entries = fill_page_numbers(entries, form.section_names)
     if student:
@@ -703,6 +663,8 @@ def fill_exam(source: Path, spec: dict, target: Path, student: bool = False) -> 
     if PREVIEW_IMAGE in entries:
         entries[PREVIEW_IMAGE] = BLANK_PNG
     form, entries = _drop_unused_pictures(form, entries)
+    infos, entries = add_pictures(form.infos, entries, writer.media.pictures)
+    form = replace(form, infos=infos)
     publish(source, form, entries, target)
     return Result(count, tuple(dict.fromkeys(notes)))
 
@@ -714,7 +676,7 @@ def _run_fill(source: str, spec_path: str, target: str, student: bool) -> str:
         spec = json.loads(Path(spec_path).read_text(encoding="utf-8-sig"))
     except (OSError, UnicodeDecodeError, ValueError) as error:
         raise FillError(f"지시 파일을 읽을 수 없음: {error}") from error
-    result = fill_exam(Path(source), spec, Path(target), student)
+    result = fill_exam(Path(source), spec, Path(target), student, Path(spec_path).resolve().parent)
     kind = "학생용, 정답 표시 없음" if student else "원안지"
     lines = [f"완료: {target} (문항 {result.items}개, {kind}). 쪽과 단이 넘어가는 자리는 한글에서 확인해 주세요",
              *(f"참고: {note}" for note in result.notes)]
