@@ -70,18 +70,21 @@
 
 ## 스킬 목록
 
-| 영역 | 부르는 말 | 스킬 | 하는 일 | 결과물 |
-|:---:|:---:|---|---|:---:|
-| **수업** | `단원:` | `unit-design` | 단원 설계(백워드·개념기반·GRASPS), 평가 배치, 차시 흐름 | 한글 |
-| | `지도안:` | `lesson-plan` | 과정안(약안·세안), 성취기준 찾기, 교사 프로필 | 한글 |
-| | `PPT:` | `class-slides` | 설명 → 확인 → 연습 → 답 수업 PPT | PPT |
-| | `학습지:` | `worksheet` | 학습지·활동지 (학생용, 교사용 정답) | 한글 |
-| **평가** | `수행평가:` | `rubric` | 채점기준표, 학업성적관리규정 점검 | 한글 |
-| | `문항:` | `assessment-items` | 문항 출제·정답 검증, 원안지, 문항정보표 | 한글 |
-| | `교과진도:` | `course-plan` | 교과진도평가계획(학사일정으로 주별 진도표, 평가 계획, 수행평가 세부기준) | 한글 |
-| **학생부** | `세특:` | `subject-record` | 교과세특 초안, 기재요령·글자 수 점검 | 대화 |
-| | `창체:` | `activity-record` | 창체 특기사항 초안 (자율·자치·진로·동아리) | 대화 |
-| | `행특:` | `behavior-record` | 행동특성 및 종합의견 초안 | 대화 |
+<table>
+<thead><tr><th nowrap>영역</th><th nowrap>부르는 말</th><th nowrap>스킬</th><th>하는 일</th><th nowrap>결과물</th></tr></thead>
+<tbody>
+<tr><td rowspan="4" nowrap align="center"><b>수업</b></td><td nowrap align="center"><kbd>단원:</kbd></td><td nowrap><kbd>unit-design</kbd></td><td>단원 설계(백워드·개념기반·GRASPS), 평가 배치, 차시 흐름</td><td nowrap align="center">한글</td></tr>
+<tr><td nowrap align="center"><kbd>지도안:</kbd></td><td nowrap><kbd>lesson-plan</kbd></td><td>과정안(약안·세안), 성취기준 찾기, 교사 프로필</td><td nowrap align="center">한글</td></tr>
+<tr><td nowrap align="center"><kbd>PPT:</kbd></td><td nowrap><kbd>class-slides</kbd></td><td>설명 → 확인 → 연습 → 답 수업 PPT</td><td nowrap align="center">PPT</td></tr>
+<tr><td nowrap align="center"><kbd>학습지:</kbd></td><td nowrap><kbd>worksheet</kbd></td><td>학습지·활동지 (학생용, 교사용 정답)</td><td nowrap align="center">한글</td></tr>
+<tr><td rowspan="3" nowrap align="center"><b>평가</b></td><td nowrap align="center"><kbd>수행평가:</kbd></td><td nowrap><kbd>rubric</kbd></td><td>채점기준표, 학업성적관리규정 점검</td><td nowrap align="center">한글</td></tr>
+<tr><td nowrap align="center"><kbd>문항:</kbd></td><td nowrap><kbd>assessment-items</kbd></td><td>문항 출제·정답 검증, 원안지, 문항정보표</td><td nowrap align="center">한글</td></tr>
+<tr><td nowrap align="center"><kbd>교과진도:</kbd></td><td nowrap><kbd>course-plan</kbd></td><td>교과진도평가계획(학사일정으로 주별 진도표, 평가 계획, 수행평가 세부기준)</td><td nowrap align="center">한글</td></tr>
+<tr><td rowspan="3" nowrap align="center"><b>학생부</b></td><td nowrap align="center"><kbd>세특:</kbd></td><td nowrap><kbd>subject-record</kbd></td><td>교과세특 초안, 기재요령·글자 수 점검</td><td nowrap align="center">대화</td></tr>
+<tr><td nowrap align="center"><kbd>창체:</kbd></td><td nowrap><kbd>activity-record</kbd></td><td>창체 특기사항 초안 (자율·자치·진로·동아리)</td><td nowrap align="center">대화</td></tr>
+<tr><td nowrap align="center"><kbd>행특:</kbd></td><td nowrap><kbd>behavior-record</kbd></td><td>행동특성 및 종합의견 초안</td><td nowrap align="center">대화</td></tr>
+</tbody>
+</table>
 
 > - **학교 양식이 없으면** 기본 양식(학습과정안, 수행평가 세부 계획, 2단 원안지)에 채웁니다.
 > - **시험 문항**은 정답을 직접 풀어 검증하고, 원안지·학생용 문제지, 정답 및 채점기준, 문항정보표를 함께 냅니다.
