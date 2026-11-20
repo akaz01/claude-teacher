@@ -227,11 +227,13 @@ claude plugin list
 
 | 하고 싶은 일 | 이렇게 시작하세요 |
 |---|---|
+| 단원 설계 (백워드·수행과제) | `단원: 고1 통합사회 인권 단원` |
 | 지도안 | `지도안: 초5 사회 국토의 위치 1차시` |
 | 수업 PPT | `PPT: 고1 통합사회 인권 보장` |
 | 학습지 (수업 중에 푸는 한 장짜리 형성평가지·복습지 포함) | `학습지: 중1 과학 물질의 구성 1차시` |
 | 수행평가 채점기준표 | `수행평가: 고2 국어 토론 발표` |
 | 시험·평가 문항 (정답 및 채점기준, 문항정보표까지) | `문항: 중2 수학 일차함수 형성평가` |
+| 교과진도평가계획 (학사일정 파일을 함께 넣어 주세요) | `교과진도: 고1 통합사회1 1학기` |
 | 교과세특 | `세특: 고1 통합과학` |
 | 창체(자율·동아리·진로) | `창체: 고2 자율활동` |
 | 행동특성 및 종합의견 | `행특: 중3` |
@@ -240,6 +242,34 @@ claude plugin list
 > 질문 없이 바로 만들어 달라고 하시면 기본값으로 만들고, 쓴 값은 답변 맨 위에 알려 드립니다.
 
 스킬마다 부르는 말, 요청 예시, 함께 주면 좋은 자료, 주의할 점은 [사용법](docs/usage.md)에 있습니다. 학교 양식을 쓰는 법도 거기에 있습니다.
+
+## 1년 사용 흐름
+
+<p align="center">
+  <img src="docs/images/year-flow.svg" alt="1년 사용 흐름: 단원 설계 → 채점기준표 → 교과진도평가계획 → 수업 자료 → 시험 문항 → 학생부" width="100%">
+</p>
+
+<table>
+<thead><tr><th nowrap>시기</th><th nowrap>학교 일</th><th>쓰는 스킬</th><th>결과물</th></tr></thead>
+<tbody>
+<tr><td nowrap align="center"><b>2월<br>새 학년 준비</b></td><td nowrap>교육과정 재구성,<br>1학기 평가계획</td><td><kbd>지도안:</kbd> 교사 프로필 설정 → <kbd>단원:</kbd> 수행평가를 거는 단원 설계 → <kbd>수행평가:</kbd> 채점기준표 → <kbd>교과진도:</kbd> 학사일정 파일로 1학기 계획</td><td>단원 설계서, 채점기준표, 교과진도평가계획</td></tr>
+<tr><td nowrap align="center"><b>3월</b></td><td nowrap>평가계획 안내,<br>첫 단원 수업</td><td><kbd>지도안:</kbd> <kbd>PPT:</kbd> <kbd>학습지:</kbd></td><td>차시 자료</td></tr>
+<tr><td nowrap align="center"><b>4월</b></td><td nowrap>1회 정기시험,<br>수행평가</td><td><kbd>문항:</kbd> 원안지·정답·문항정보표, <kbd>수행평가:</kbd> 기준 확인</td><td>시험지 한 벌</td></tr>
+<tr><td nowrap align="center"><b>5월</b></td><td nowrap>공개수업,<br>수행평가</td><td><kbd>지도안:</kbd> 세안, <kbd>PPT:</kbd></td><td>공개수업 지도안</td></tr>
+<tr><td nowrap align="center"><b>6월</b></td><td nowrap>2회 정기시험</td><td><kbd>문항:</kbd></td><td>시험지 한 벌</td></tr>
+<tr><td nowrap align="center"><b>7월</b></td><td nowrap>1학기 기록,<br>2학기 준비</td><td><kbd>세특:</kbd> <kbd>창체:</kbd>, <kbd>단원:</kbd> 2학기 단원</td><td>세특·창체 초안</td></tr>
+<tr><td nowrap align="center"><b>8월</b></td><td nowrap>2학기 평가계획</td><td><kbd>수행평가:</kbd> → <kbd>교과진도:</kbd> 2학기 계획</td><td>2학기 교과진도평가계획</td></tr>
+<tr><td nowrap align="center"><b>9~10월</b></td><td nowrap>수업,<br>1회 정기시험</td><td><kbd>지도안:</kbd> <kbd>PPT:</kbd> <kbd>학습지:</kbd>, <kbd>문항:</kbd></td><td>차시 자료, 시험지</td></tr>
+<tr><td nowrap align="center"><b>11~12월</b></td><td nowrap>2회 정기시험,<br>학년말 기록</td><td><kbd>문항:</kbd>, <kbd>세특:</kbd> <kbd>창체:</kbd>, 담임은 <kbd>행특:</kbd></td><td>학생부 초안</td></tr>
+<tr><td nowrap align="center"><b>1~2월</b></td><td nowrap>학생부 마감,<br>다음 해 준비</td><td><kbd>세특:</kbd> <kbd>창체:</kbd> <kbd>행특:</kbd> 글자 수(NEIS 바이트) 점검</td><td>마감본</td></tr>
+</tbody>
+</table>
+
+- **주마다:** 주초에 다음 주 차시를 <kbd>지도안:</kbd>(약안) → <kbd>PPT:</kbd> → <kbd>학습지:</kbd> 순으로 만듭니다.
+- **이어 쓰기:** 교과진도평가계획을 만들 때 단원 설계서와 채점기준표 파일을 함께 주시면 수행평가 세부기준에 그대로 넣습니다.
+- **수행평가 뒤:** 학생별 관찰을 짧게 적어 두세요. 학기 말 <kbd>세특:</kbd>의 재료가 됩니다.
+- **교과진도평가계획 제출 전:** 노란 형광펜을 칠한 곳(반영 비율, 기본점수, 결시 처리 등)을 학교 학업성적관리규정으로 고친 뒤 형광펜과 메모를 지웁니다.
+- **초등:** 정기시험 대신 성취기준별 평가로 계획하고, 교과 기록은 성취수준 및 특기사항으로 씁니다.
 
 ## 더 알아보기
 

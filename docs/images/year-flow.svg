@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="560" viewBox="0 0 1280 560" role="img" aria-label="1년 사용 흐름: 단원 설계, 채점기준표, 교과진도평가계획, 수업 자료, 시험 문항, 학생부">
+<defs><linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0f2a5c"/><stop offset="0.55" stop-color="#26357a"/><stop offset="1" stop-color="#5a2d82"/></linearGradient><linearGradient id="accent" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#f4a261"/><stop offset="1" stop-color="#e76f51"/></linearGradient><marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#ffd8a8"/></marker></defs>
+<rect width="1280" height="560" rx="22" fill="url(#bg)"/>
+<g font-family="Pretendard, 'Noto Sans KR', 'Malgun Gothic', 'Apple SD Gothic Neo', 'Segoe UI', sans-serif">
+<rect x="60" y="48" width="56" height="6" rx="3" fill="url(#accent)"/>
+<text x="60" y="96" fill="#ffffff" font-size="38" font-weight="800">1년 사용 흐름</text>
+<text x="60" y="132" fill="#dfe6ff" font-size="20" font-weight="500">한 번 설계한 것을 학기 내내 다시 씁니다 · 중·고 기준</text>
+<rect x="61" y="170" width="168" height="132" rx="16" fill="#ffffff" fill-opacity="0.12" stroke="#ffffff" stroke-opacity="0.35"/>
+<circle cx="91" cy="202" r="16" fill="url(#accent)"/>
+<text x="91" y="209" fill="#1b1f3b" font-size="18" font-weight="800" text-anchor="middle">1</text>
+<text x="145" y="252" fill="#ffffff" font-size="22" font-weight="800" text-anchor="middle">단원 설계</text>
+<text x="145" y="282" fill="#ffd8a8" font-size="17" font-weight="700" text-anchor="middle">단원:</text>
+<line x1="233" y1="236" x2="255" y2="236" stroke="#ffd8a8" stroke-width="3" marker-end="url(#arrow)"/>
+<rect x="259" y="170" width="168" height="132" rx="16" fill="#ffffff" fill-opacity="0.12" stroke="#ffffff" stroke-opacity="0.35"/>
+<circle cx="289" cy="202" r="16" fill="url(#accent)"/>
+<text x="289" y="209" fill="#1b1f3b" font-size="18" font-weight="800" text-anchor="middle">2</text>
+<text x="343" y="252" fill="#ffffff" font-size="22" font-weight="800" text-anchor="middle">채점기준표</text>
+<text x="343" y="282" fill="#ffd8a8" font-size="17" font-weight="700" text-anchor="middle">수행평가:</text>
+<line x1="431" y1="236" x2="453" y2="236" stroke="#ffd8a8" stroke-width="3" marker-end="url(#arrow)"/>
+<rect x="457" y="170" width="168" height="132" rx="16" fill="#ffffff" fill-opacity="0.12" stroke="#ffffff" stroke-opacity="0.35"/>
+<circle cx="487" cy="202" r="16" fill="url(#accent)"/>
+<text x="487" y="209" fill="#1b1f3b" font-size="18" font-weight="800" text-anchor="middle">3</text>
+<text x="541" y="252" fill="#ffffff" font-size="19" font-weight="800" text-anchor="middle">교과진도평가계획</text>
+<text x="541" y="282" fill="#ffd8a8" font-size="17" font-weight="700" text-anchor="middle">교과진도:</text>
+<line x1="629" y1="236" x2="651" y2="236" stroke="#ffd8a8" stroke-width="3" marker-end="url(#arrow)"/>
+<rect x="655" y="170" width="168" height="132" rx="16" fill="#ffffff" fill-opacity="0.12" stroke="#ffffff" stroke-opacity="0.35"/>
+<circle cx="685" cy="202" r="16" fill="url(#accent)"/>
+<text x="685" y="209" fill="#1b1f3b" font-size="18" font-weight="800" text-anchor="middle">4</text>
+<text x="739" y="252" fill="#ffffff" font-size="22" font-weight="800" text-anchor="middle">수업 자료</text>
+<text x="739" y="282" fill="#ffd8a8" font-size="14" font-weight="700" text-anchor="middle">지도안 · PPT · 학습지</text>
+<line x1="827" y1="236" x2="849" y2="236" stroke="#ffd8a8" stroke-width="3" marker-end="url(#arrow)"/>
+<rect x="853" y="170" width="168" height="132" rx="16" fill="#ffffff" fill-opacity="0.12" stroke="#ffffff" stroke-opacity="0.35"/>
+<circle cx="883" cy="202" r="16" fill="url(#accent)"/>
+<text x="883" y="209" fill="#1b1f3b" font-size="18" font-weight="800" text-anchor="middle">5</text>
+<text x="937" y="252" fill="#ffffff" font-size="22" font-weight="800" text-anchor="middle">시험 문항</text>
+<text x="937" y="282" fill="#ffd8a8" font-size="17" font-weight="700" text-anchor="middle">문항:</text>
+<line x1="1025" y1="236" x2="1047" y2="236" stroke="#ffd8a8" stroke-width="3" marker-end="url(#arrow)"/>
+<rect x="1051" y="170" width="168" height="132" rx="16" fill="#ffffff" fill-opacity="0.12" stroke="#ffffff" stroke-opacity="0.35"/>
+<circle cx="1081" cy="202" r="16" fill="url(#accent)"/>
+<text x="1081" y="209" fill="#1b1f3b" font-size="18" font-weight="800" text-anchor="middle">6</text>
+<text x="1135" y="252" fill="#ffffff" font-size="22" font-weight="800" text-anchor="middle">학생부</text>
+<text x="1135" y="282" fill="#ffd8a8" font-size="14" font-weight="700" text-anchor="middle">세특 · 창체 · 행특</text>
+<text x="60" y="356" fill="#ffffff" font-size="20" font-weight="700">한 해 일정</text>
+<text x="123" y="388" fill="#dfe6ff" font-size="15" font-weight="600" text-anchor="middle">2월</text>
+<text x="209" y="388" fill="#dfe6ff" font-size="15" font-weight="600" text-anchor="middle">3월</text>
+<text x="295" y="388" fill="#dfe6ff" font-size="15" font-weight="600" text-anchor="middle">4월</text>
+<text x="382" y="388" fill="#dfe6ff" font-size="15" font-weight="600" text-anchor="middle">5월</text>
+<text x="468" y="388" fill="#dfe6ff" font-size="15" font-weight="600" text-anchor="middle">6월</text>
+<text x="554" y="388" fill="#dfe6ff" font-size="15" font-weight="600" text-anchor="middle">7월</text>
+<text x="640" y="388" fill="#dfe6ff" font-size="15" font-weight="600" text-anchor="middle">8월</text>
+<text x="726" y="388" fill="#dfe6ff" font-size="15" font-weight="600" text-anchor="middle">9월</text>
+<text x="812" y="388" fill="#dfe6ff" font-size="15" font-weight="600" text-anchor="middle">10월</text>
+<text x="898" y="388" fill="#dfe6ff" font-size="15" font-weight="600" text-anchor="middle">11월</text>
+<text x="985" y="388" fill="#dfe6ff" font-size="15" font-weight="600" text-anchor="middle">12월</text>
+<text x="1071" y="388" fill="#dfe6ff" font-size="15" font-weight="600" text-anchor="middle">1월</text>
+<text x="1157" y="388" fill="#dfe6ff" font-size="15" font-weight="600" text-anchor="middle">2월</text>
+<rect x="80" y="400" width="1120" height="34" rx="17" fill="#ffffff" fill-opacity="0.08"/>
+<rect x="83" y="404" width="80" height="26" rx="13" fill="#f4a261" fill-opacity="0.9"/>
+<text x="123" y="466" fill="#ffffff" font-size="16" font-weight="700" text-anchor="middle">설계·평가계획</text>
+<rect x="169" y="404" width="339" height="26" rx="13" fill="#4c8dff" fill-opacity="0.9"/>
+<text x="338" y="494" fill="#ffffff" font-size="16" font-weight="700" text-anchor="middle">1학기 수업 · 정기시험 2회</text>
+<rect x="514" y="404" width="80" height="26" rx="13" fill="#c77dff" fill-opacity="0.9"/>
+<text x="554" y="466" fill="#ffffff" font-size="16" font-weight="700" text-anchor="middle">1학기 기록</text>
+<rect x="600" y="404" width="80" height="26" rx="13" fill="#f4a261" fill-opacity="0.9"/>
+<text x="640" y="494" fill="#ffffff" font-size="16" font-weight="700" text-anchor="middle">2학기 계획</text>
+<rect x="686" y="404" width="339" height="26" rx="13" fill="#4c8dff" fill-opacity="0.9"/>
+<text x="855" y="466" fill="#ffffff" font-size="16" font-weight="700" text-anchor="middle">2학기 수업 · 정기시험 2회</text>
+<rect x="1031" y="404" width="166" height="26" rx="13" fill="#c77dff" fill-opacity="0.9"/>
+<text x="1114" y="494" fill="#ffffff" font-size="16" font-weight="700" text-anchor="middle">학년말 기록 · 마감</text>
+</g></svg>
