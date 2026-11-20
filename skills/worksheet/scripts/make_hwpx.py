@@ -36,9 +36,11 @@
                                                                  # 합쳐서 가려지는 칸은 행에서 뺀다 (HTML 표와 같음)
                                                                  # "header_rows": header 아래에 더할 머리행 수(음영), "border": "none" 테두리 없음
                                                                  # "keep_with_next": true면 다음 블록(선지)과 같은 쪽·단에 둠
+                                                                 # "keep_together": true면 길어도 쪽을 넘어 나뉘지 않고 통째로 옮겨짐 (상자)
                                                                  # 높이 약 53mm 이하의 짧은 표, 머리행이 있는 106mm 이하 표,
                                                                  #  행이 하나인 141mm 이하 표(빈 풀이 칸)는 쪽을 넘어 나뉘지 않고 통째로 옮겨진다
                                                                  #  더 긴 표는 행 단위로 나뉘고(머리행은 쪽마다 반복), 쪽보다 큰 행은 칸 안에서 나뉜다
+                                                                 # "split_rows": true면 짧은 표도 행 단위로 나뉜다 (keep_together가 우선)
                                                                  # valign: top/center/bottom, 칸 "header": true면 머리칸 음영
                                                                  # 칸 색·테두리는 make_hwpx_design.py, 표 "gap": normal|small|tight는 위아래 간격
     {"type": "stem", "number": 1, "text": "문두", "points": 3.2},   # 문제지 문두: 둘째 줄 내어쓰기(기준선), 배점은 마지막 낱말에 묶음 빈칸으로 붙음
@@ -87,7 +89,7 @@ from make_hwpx_text import BACKSLASH_FOR_HANGUL_FONTS, _clean, _xml_text, as_tex
 from make_hwpx_cells import (  # noqa: F401  (표 칸 모양·크기 어림. 여기서도 쓸 수 있게 다시 내보냄)
     ANSWER_LINE_HEIGHT, CELL_ALIGNS, CELL_FULL_CHAR_WIDTH, CELL_HALF_CHAR_WIDTH, CELL_LINE_HEIGHT, CELL_MARGIN_X,
     CELL_MARGIN_Y, CELL_PADDING_X, CELL_PADDING_Y, CELL_VALIGNS, MAX_LINES, ROW_HEIGHT, MAX_SPAN, MAX_TABLE_COLS, MAX_TABLE_ROWS,
-    TableCell, _estimated_rows, _make_cell, _row_heights, _span, _split_width, _text_lines, layout_table)
+    TableCell, _box_height, _estimated_rows, _make_cell, _row_heights, _span, _split_width, _text_lines, layout_table)
 from make_hwpx_options import (  # noqa: F401
     _bool_option, _choice, _int_option, _item_spec, _list_or_empty, _start_option, _validate_spec)
 from make_hwpx_exam import EXAM_PARA_STYLES, exam_handlers
@@ -114,6 +116,8 @@ INLINE_ONE_ROW_MAX_HEIGHT = 40000       # 약 141mm
 INLINE_HEADED_TABLE_MAX_HEIGHT = 30000  # 약 106mm
 # 한 행이 쪽보다 크면 pageBreak="TABLE"에서 넘치는 내용이 사라진다 (한글에서 확인). 그런 표는 칸 안에서도 나눈다
 ROW_SPLIT_LIMIT = 30000
+# keep_together 상자도 이보다 길면(약 230mm, A4 본문 높이 안쪽) 글자처럼 취급하면 쪽 아래가 잘리므로 행 단위로 나눈다
+KEEP_TOGETHER_MAX_HEIGHT = 65000
 SKELETON_SECTION_ERROR = "골격 section0.xml 형식이 예상과 다름"
 BORDERS = ("solid", "none")
 EQUATION_SHOWN = 20                     # 경고에 보여 줄 수식 글자 수
@@ -145,7 +149,7 @@ PARA_STYLES = {
     "item_num1": ("LEFT", 160, 0, 150, 1000, False, ITEM_HANG["num1"]),
     "item_num2": ("LEFT", 160, 0, 150, 1000, False, ITEM_HANG["num2"]),
     "spacer": ("LEFT", 100, 0, 0, 0, False), "chip": ("CENTER", 100, 0, 0, 0, False),
-    "anchor": ("LEFT", 100, 0, 0, 0, False),
+    "anchor": ("LEFT", 100, 0, 0, 0, False), "anchor_keep": ("LEFT", 100, 0, 0, 0, True),
     "cell": ("LEFT", 130, 0, 0, 0, False), "cell_center": ("CENTER", 130, 0, 0, 0, False),
     "cell_right": ("RIGHT", 130, 0, 0, 0, False),
     **{f"outline{level}": ("LEFT", 160, 0, 150, (level - 1) * OUTLINE_INDENT, False)
@@ -460,7 +464,8 @@ class SectionWriter:
     def table(self, header: list | None, rows: list, widths: list | None = None,
               row_height: int = ROW_HEIGHT, valign: str = "CENTER", splittable: bool = True,
               header_rows: int = 0, border: str = "solid", keep_with_next: bool = False,
-              gap: str | None = None, paper: dict | None = None, gap_px=None, width_px=None) -> str:
+              gap: str | None = None, paper: dict | None = None, gap_px=None, width_px=None,
+              split_rows: bool = False, boxed: bool = False) -> str:
         plain = _choice(border, "border", BORDERS, "solid") == "none"
         out_top, out_bottom = _gap_px(gap_px) or (2 * (TABLE_GAPS[_choice(gap, "gap", tuple(TABLE_GAPS), "normal")],))
         header = _list_or_empty(header, "header")
@@ -489,7 +494,13 @@ class SectionWriter:
                             for row_cells in by_row)
         repeat = int(any(c.header for c in cells))
         estimated = _estimated_rows(cells, heights, col_widths)
-        inline = not paper and (not splittable or sum(estimated) <= _inline_limit(len(all_rows), bool(header)))
+        if boxed and not paper and _box_height(cells, estimated, col_widths) > KEEP_TOGETHER_MAX_HEIGHT:
+            first = next((c.text.strip() for c in cells if c.text.strip()), "")
+            self.warnings.append(f"통째로 옮길 상자('{first[:15]}…')가 한 쪽보다 길어 잘리지 않게 행 단위로 나눴습니다. "
+                                 "상자 안 글을 줄여 주세요")
+            splittable = True
+        short = not split_rows and sum(estimated) <= _inline_limit(len(all_rows), bool(header))
+        inline = not paper and (not splittable or short)
         page_break = "NONE" if inline else "CELL" if max(estimated) > ROW_SPLIT_LIMIT else "TABLE"
         table = (
             f'<hp:tbl id="{next(self._table_ids)}" zOrder="0" numberingType="TABLE" textWrap="{_table_wrap(paper)}" '
@@ -504,7 +515,8 @@ class SectionWriter:
             f'<hp:inMargin left="{in_x}" right="{in_x}" top="{in_y}" bottom="{in_y}"/>{trs}</hp:tbl>'
         )
         anchor = self.paragraph(f'<hp:run charPrIDRef="{self.styles.char["spacer" if paper else "body"]}">{table}<hp:t/></hp:run>',
-                                "spacer" if paper else "anchor" if self.app else "left_keep" if keep_with_next else "left")
+                                "spacer" if paper else ("anchor_keep" if keep_with_next else "anchor") if self.app
+                                else "left_keep" if keep_with_next else "left")
         return anchor if inline or paper else anchor + self._spacer()
 
     def _preview_text(self, cell: "TableCell") -> str:
@@ -561,9 +573,12 @@ class SectionWriter:
         rows = _list_or_empty(block.get("rows"), "rows")
         header_rows = block.get("header_rows")
         header_rows = 0 if header_rows is None else _int_option(header_rows, "header_rows", 0, len(rows))
-        return self.table(block.get("header"), rows, block.get("widths"), header_rows=header_rows,
+        keep_together = _bool_option(block.get("keep_together"), "keep_together", False)
+        return self.table(block.get("header"), rows, block.get("widths"), header_rows=header_rows, boxed=keep_together,
                           border=block.get("border"), gap=block.get("gap"), paper=block.get("paper"), gap_px=block.get("gap_px"), width_px=block.get("width_px"),
-                          keep_with_next=_bool_option(block.get("keep_with_next"), "keep_with_next", False))
+                          keep_with_next=_bool_option(block.get("keep_with_next"), "keep_with_next", False),
+                          splittable=not keep_together,
+                          split_rows=_bool_option(block.get("split_rows"), "split_rows", False))
 
     def _shape_block(self, block: dict) -> str:
         """종이 기준으로 놓는 도형 하나(예: 머리 띠 바탕). paper: {x, y} px, w·h·fill·fill_to 는 도형 값."""

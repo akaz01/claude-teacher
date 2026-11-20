@@ -142,7 +142,8 @@ def _text_lines(text: str, width: int) -> int:
     usable = max(width - CELL_PADDING_X, CELL_FULL_CHAR_WIDTH)
     lines = 0
     for part in text.split("\n"):
-        used = sum(CELL_HALF_CHAR_WIDTH if ord(ch) < 0x1100 else CELL_FULL_CHAR_WIDTH for ch in part)
+        used = sum(CELL_HALF_CHAR_WIDTH if ord(ch) < 0x1100 else CELL_FULL_CHAR_WIDTH for ch in part
+                   if not 0xE000 <= ord(ch) <= 0xE00F)          # 형광펜·메모 표식 (course-plan course_form_marks.py)
         lines += max(1, -(-used // usable))
     return lines
 
@@ -157,6 +158,18 @@ def _estimated_rows(cells: list[TableCell], heights: list[int], col_widths: list
         text_height = _text_lines(cell.text, width) * CELL_LINE_HEIGHT + CELL_PADDING_Y
         rows[cell.row] = max(rows[cell.row], text_height)
     return rows
+
+
+def _box_height(cells: list[TableCell], rows: list[int], col_widths: list[int]) -> int:
+    """상자(keep_together 표) 전체 높이 어림: 행 높이 합에, 여러 행을 합친 칸의 글이 걸친 행들보다 길면 그만큼 더한다."""
+    extra = 0
+    for cell in cells:
+        if cell.rowspan == 1:
+            continue
+        width = sum(col_widths[cell.col:cell.col + cell.colspan])
+        need = _text_lines(cell.text, width) * CELL_LINE_HEIGHT + CELL_PADDING_Y
+        extra = max(extra, need - sum(rows[cell.row:cell.row + cell.rowspan]))
+    return sum(rows) + extra
 
 
 def _split_width(total: int, ratios: list) -> list[int]:

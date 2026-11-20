@@ -94,4 +94,5 @@ def wide_words(text: str, inner_width: int, em: int = CELL_EM) -> list[str]:
     """칸 안쪽 너비보다 넓어 한글이 낱말 중간에서 줄을 바꿀 낱말들. 수식({{ }})과 표기(**, __, ~~)는 뺀다."""
     plain = re.sub(r"\{\{.*?\}\}", " ", text)
     plain = re.sub(r"\*\*|__|~~", "", plain)
+    plain = re.sub("[\ue000-\ue00f]", "", plain)          # 형광펜·메모 표식 (course-plan course_form_marks.py)
     return [word for word in plain.split() if _word_width(word, em) > inner_width]
