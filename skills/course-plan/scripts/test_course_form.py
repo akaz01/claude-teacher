@@ -448,3 +448,38 @@ def test_elementary_also_gets_the_school_education_place_or_lines(tmp_path):
     spec = changed(ELEMENTARY, "progress.0.education", ["생활안전교육(1시간)"])
     body, _, xml = make(tmp_path, spec, "given.hwpx")
     assert "[생활안전교육" in body and "(1시간)]" in body and "[학교 안내 교육]" not in body   # 좁은 칸은 '(' 앞에서 줄바꿈
+
+
+# ---------------------------------------------------------------- 리뷰 반영 3 (2026-11-21)
+
+def test_wrapping_a_paragraph_that_starts_with_a_memo_keeps_the_new_marks_outside_it():
+    from course_form_marks import MEMO_CLOSE, RULE_OPEN, wrap_paragraph
+    memo = ('<hp:ctrl><hp:fieldBegin id="5" type="MEMO"><hp:subList><hp:p id="0"><hp:run charPrIDRef="1">'
+            '<hp:t>옛 메모</hp:t></hp:run></hp:p></hp:subList></hp:fieldBegin></hp:ctrl>')
+    paragraph = f'<hp:p id="0"><hp:run charPrIDRef="1">{memo}<hp:t>본문 글</hp:t></hp:run></hp:p>'
+    wrapped = wrap_paragraph(paragraph, RULE_OPEN, MEMO_CLOSE)
+    assert memo in wrapped and RULE_OPEN + "본문 글" + MEMO_CLOSE in wrapped
+
+
+def test_education_lines_are_one_bracketed_line_each():
+    from make_course_plan_input import CoursePlanError, _education
+    assert _education(["교통안전\n교육(3시간)", "[[성교육(1시간)", "", "[안전]"], "e") == [
+        "[교통안전 교육(3시간)]", "[성교육(1시간)]", "[안전]"]
+    with pytest.raises(CoursePlanError, match="너무 김"):
+        _education(["가" * 101], "e")
+
+
+def test_a_failed_highlight_step_leaves_the_earlier_elementary_file_and_no_draft(tmp_path, monkeypatch):
+    import make_course_plan
+    from make_course_plan import build
+    target = tmp_path / "elem.hwpx"
+    build(ELEMENTARY, target)
+    before = target.read_bytes()
+
+    def broken(*_args, **_kwargs):
+        raise RuntimeError("검사 실패 흉내")
+    monkeypatch.setattr(make_course_plan, "apply_marks", broken)
+    with pytest.raises(RuntimeError):
+        build(ELEMENTARY, target)
+    assert target.read_bytes() == before
+    assert [p.name for p in tmp_path.iterdir()] == ["elem.hwpx"]

@@ -142,7 +142,8 @@ def _text_lines(text: str, width: int) -> int:
     usable = max(width - CELL_PADDING_X, CELL_FULL_CHAR_WIDTH)
     lines = 0
     for part in text.split("\n"):
-        used = sum(CELL_HALF_CHAR_WIDTH if ord(ch) < 0x1100 else CELL_FULL_CHAR_WIDTH for ch in part)
+        used = sum(CELL_HALF_CHAR_WIDTH if ord(ch) < 0x1100 else CELL_FULL_CHAR_WIDTH for ch in part
+                   if not 0xE000 <= ord(ch) <= 0xE00F)          # 형광펜·메모 표식 (course-plan course_form_marks.py)
         lines += max(1, -(-used // usable))
     return lines
 

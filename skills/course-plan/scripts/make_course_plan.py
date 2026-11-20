@@ -32,6 +32,7 @@
 from __future__ import annotations
 
 import json
+import os
 import sys
 import zipfile
 from pathlib import Path
@@ -69,8 +70,9 @@ def mark_counts(spec: dict) -> tuple[int, int]:
     return count_marks(json.dumps(spec["blocks"], ensure_ascii=False))
 
 
-def apply_marks_file(path: Path) -> None:
-    """make_hwpx로 만든 파일의 표식 글자를 형광펜과 메모로 바꾼다 (미리 보기 글에서는 뺀다)."""
+def apply_marks_file(path: Path, target: Path) -> None:
+    """make_hwpx로 만든 파일(path)의 표식 글자를 형광펜과 메모로 바꿔 target에 한 번에 저장한다
+    (미리 보기 글에서는 뺀다). 실패하면 target은 그대로다."""
     with zipfile.ZipFile(path) as source:
         infos = source.infolist()
         entries = {info.filename: source.read(info.filename) for info in infos}
@@ -80,9 +82,9 @@ def apply_marks_file(path: Path) -> None:
     if "Preview/PrvText.txt" in entries:
         entries["Preview/PrvText.txt"] = MARK_RE.sub("", entries["Preview/PrvText.txt"].decode("utf-8")).encode("utf-8")
     known = validate_package(path)
-    save_atomically(path, lambda target: write_zip(target, infos, entries),
+    save_atomically(target, lambda temp: write_zip(temp, infos, entries),
                     hwpx_check(RuntimeError, "형광펜·메모를 넣은 hwpx 검사 실패:", known, validate_package),
-                    existing=OWN_FILES_ONLY)                     # 바로 앞에서 make_hwpx가 만든 파일
+                    existing=OWN_FILES_ONLY)                     # 이 도구가 만든 파일만 바꿔 쓴다
 
 
 def _pen_line(pens: int, memos: int) -> str:
@@ -105,8 +107,13 @@ def build(spec: dict, out_path: Path, form: Path | None = None) -> list[str]:
         raise ValueError("초등은 학교 양식 자동 채우기를 하지 않음 (references/form-fill.md 순서로 채우기)")
     layout_warnings: list[str] = []
     document = to_spec(plan, layout_warnings)
-    made = build_hwpx(document, Path(out_path))
-    apply_marks_file(Path(out_path))
+    out_path = Path(out_path)
+    draft = out_path.with_name(f"~{out_path.stem}.{os.getpid()}.marks.hwpx")   # 같은 폴더의 중간 파일
+    try:
+        made = build_hwpx(document, draft)
+        apply_marks_file(draft, out_path)
+    finally:
+        draft.unlink(missing_ok=True)
     return [_pen_line(*mark_counts(document)), *warnings, *layout_warnings, *made]
 
 

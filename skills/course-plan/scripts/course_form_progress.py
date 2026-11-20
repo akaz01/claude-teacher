@@ -160,7 +160,8 @@ def _row5(cells: dict, week: dict, entries: list[dict], ctx: dict, row_no: int) 
     units, codes = _lines(entries, "unit"), _lines(entries, "standards")
     hours = [estimated_mark(f"{week['hours']}/{week['cumulative']}", ctx)]
     height, _ = _height([(["0.00.~00.00.", "(0)"], cell_width(get(0))), (hours, cell_width(get(1))),
-                         (units, cell_width(get(2))), (codes, cell_width(get(3))), (week["notes"], cell_width(get(4)))])
+                         (units, cell_width(get(2))), (codes, cell_width(get(3))),
+                         (week["notes"] + _extra_notes(entries, ctx, row_no), cell_width(get(4)))])
     where = {"row": row_no, "height": height}
     return [fill_cell(get(0), _period_paras(get(0), week, ctx, row_no == 1), **where),
             fill_cell(get(1), _plain_paras(get(1), hours), **where),
@@ -185,7 +186,7 @@ def _row7(cells: dict, week: dict, entries: list[dict], ctx: dict, row_no: int) 
     codes = split_ranges(_lines(entries, "standards"), alone=True)        # 좁은 성취기준 칸 (양식처럼 세 줄)
     height, lines = _height([(["0.00.~00.00.", "(0)"], cell_width(get(1))), (units, cell_width(get(2))),
                              (codes, cell_width(get(3))), (teaching, cell_width(get(4))),
-                             (week["notes"], cell_width(get(6)))])
+                             (week["notes"] + _extra_notes(entries, ctx, row_no), cell_width(get(6)))])
     where = {"row": row_no, "height": height}
     return [fill_cell(get(0), _plain_paras(get(0), [week["week"]]), **where),
             fill_cell(get(1), _period_paras(get(1), week, ctx, row_no == 1), **where),

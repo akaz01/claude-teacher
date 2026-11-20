@@ -16,7 +16,7 @@ from __future__ import annotations
 import re
 from datetime import datetime, timezone
 
-from course_form_xml import plain, xml_text
+from course_form_xml import xml_text
 
 RULE_OPEN, CHECK_OPEN, PEN_OPEN = "\ue000", "\ue001", "\ue002"
 MEMO_CLOSE, PEN_CLOSE = "\ue003", "\ue004"
@@ -154,11 +154,31 @@ def _balanced(text: str) -> bool:
     return memos == 0 and pens == 0
 
 
+CTRL_TOKEN_RE = re.compile(r"<hp:ctrl>|</hp:ctrl>|<hp:t>|</hp:t>")
+
+
+def _body_text_spans(paragraph: str) -> tuple[list[int], list[int]]:
+    """메모·필드 같은 <hp:ctrl> 안을 뺀 본문 <hp:t>의 (글 시작 위치들, 글 끝 위치들)."""
+    depth, starts, ends = 0, [], []
+    for match in CTRL_TOKEN_RE.finditer(paragraph):
+        token = match.group(0)
+        if token == "<hp:ctrl>":
+            depth += 1
+        elif token == "</hp:ctrl>":
+            depth -= 1
+        elif depth == 0 and token == "<hp:t>":
+            starts.append(match.end())
+        elif depth == 0:
+            ends.append(match.start())
+    return starts, ends
+
+
 def wrap_paragraph(paragraph: str, opener: str, closer: str) -> str:
-    """양식에 있던 문단(글이 여러 run에 나뉜 것)의 글 전체를 표식으로 감싼다. 글이 없으면 그대로."""
-    starts = [m.end() for m in re.finditer(r"<hp:t>", paragraph)]
-    ends = [m.start() for m in re.finditer(r"</hp:t>", paragraph)]
-    if not starts or not ends or not plain(paragraph).strip():
+    """양식에 있던 문단(글이 여러 run에 나뉜 것)의 본문 글 전체를 표식으로 감싼다. 메모 안 글은 건드리지 않는다.
+    본문 글이 없으면 그대로."""
+    starts, ends = _body_text_spans(paragraph)
+    body = "".join(paragraph[a:b] for a, b in zip(starts, ends))
+    if not starts or not ends or not re.sub(r"<[^>]+>", "", body).strip():
         return paragraph
     return paragraph[:starts[0]] + opener + paragraph[starts[0]:ends[-1]] + closer + paragraph[ends[-1]:]
 

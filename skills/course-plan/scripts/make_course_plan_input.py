@@ -213,6 +213,21 @@ def week_label(value, field: str) -> str:
     return text.replace("∼", "~").replace(" ", "").removesuffix("주")
 
 
+MAX_EDUCATION = 100          # 학교 안내 교육 한 줄 글자 수 한도 ('[교육명(시간)]')
+
+
+def _education(value, field: str) -> list[str]:
+    """학교가 배정해 안내한 교육: 줄마다 '[교육명(시간)]' 하나 (줄바꿈·겹친 대괄호는 정리한다)."""
+    lines = []
+    for line in _text_lines(value, field):
+        name = " ".join(line.split()).strip("[] ")
+        if len(name) > MAX_EDUCATION:
+            raise CoursePlanError(f"'{field}'의 교육 이름이 너무 김 ({len(name)}자, {MAX_EDUCATION}자까지)")
+        if name:
+            lines.append(f"[{name}]")
+    return lines
+
+
 def read_progress(spec: dict, weeks: list[dict]) -> list[dict]:
     labels = [week["week"] for week in weeks]
     rows = []
@@ -226,7 +241,7 @@ def read_progress(spec: dict, weeks: list[dict]) -> list[dict]:
                      "standards": read_codes(item.get("standards"), f"{where} standards"),
                      "methods": read_text(item.get("methods"), f"{where} methods"),
                      "focus": read_text(item.get("focus"), f"{where} focus"),
-                     "education": _text_lines(item.get("education"), f"{where} education")})
+                     "education": _education(item.get("education"), f"{where} education")})
     return rows
 
 

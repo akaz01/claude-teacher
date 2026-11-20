@@ -207,7 +207,9 @@ def build_form(plan: dict, out_path: Path, form: Path | None = None) -> tuple[tu
     except (StopIteration, KeyError, IndexError) as error:
         raise FormError(f"양식 짜임이 기본 양식과 달라 채우지 못함 ({type(error).__name__}): "
                         "references/form-fill.md 순서로 채워 주세요") from None
-    kept_memos = source_section.count('type="MEMO"')
+    old_ids = re.findall(r'<hp:fieldBegin id="(\d+)" type="MEMO"', source_section)
+    new_ids = set(re.findall(r'<hp:fieldBegin id="(\d+)" type="MEMO"', section))
+    kept_memos = sum(1 for memo_id in old_ids if memo_id in new_ids) if old_ids else source_section.count('type="MEMO"')
     if kept_memos:
         warnings.append(f"양식에 원래 있던 메모 {kept_memos}개가 남아 있음: 한글에서 확인하세요")
     entries[SECTION] = section.encode("utf-8")
