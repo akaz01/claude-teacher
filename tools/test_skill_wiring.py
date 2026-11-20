@@ -25,7 +25,7 @@ import fill_hwpx  # noqa: E402
 from make_hwpx import build_hwpx  # noqa: E402
 
 skill_text = skill
-FORM_SKILLS = ("lesson-plan", "worksheet", "rubric", "assessment-items", "unit-design")
+FORM_SKILLS = ("lesson-plan", "worksheet", "rubric", "assessment-items", "unit-design", "course-plan")
 FORM_FILES = ("scripts/fill_hwpx.py", "scripts/fill_hwpx_parse.py", "scripts/make_hwpx.py",
               "scripts/make_hwpx_check.py", "references/form-fill.md")
 REMOVED_SKILLS = ("annual-plan", "counseling-log", "curriculum-lookup-skill", "differentiation", "meeting-minutes",

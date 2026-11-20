@@ -7,11 +7,11 @@
 [![release](https://img.shields.io/github/v/release/akaz01/claude-teacher?label=release&color=2ea44f)](https://github.com/akaz01/claude-teacher/releases/latest)
 [![tests](https://github.com/akaz01/claude-teacher/actions/workflows/test.yml/badge.svg)](https://github.com/akaz01/claude-teacher/actions/workflows/test.yml)
 [![license](https://img.shields.io/badge/license-CC%20BY--NC%204.0-lightgrey)](LICENSE)
-![skills](https://img.shields.io/badge/skills-9-blue)
+![skills](https://img.shields.io/badge/skills-10-blue)
 ![output](https://img.shields.io/badge/output-hwpx%20%C2%B7%20pptx-1f6feb)
 ![works with](https://img.shields.io/badge/%EC%82%AC%EC%9A%A9-claude.ai%20%C2%B7%20Claude%20Code-d97757)
 
-**스킬 9개** | 수업 · 평가 · 학생부 | 한글(hwpx) · PPT | 성취기준 4,451개 | claude.ai · Claude Code
+**스킬 10개** | 수업 · 평가 · 학생부 | 한글(hwpx) · PPT | 성취기준 4,451개 | claude.ai · Claude Code
 
 </div>
 
@@ -34,7 +34,7 @@
 
 <p align="center"><b>지도안, 학습지, 수업 PPT, 시험지, 학생부 초안을 학교 양식에 바로 쓰도록 만듭니다.</b></p>
 
-<p align="center">초·중·고 교사의 수업·평가·학교생활기록부 업무를 돕는 Claude 스킬 9개입니다.<br>
+<p align="center">초·중·고 교사의 수업·평가·학교생활기록부 업무를 돕는 Claude 스킬 10개입니다.<br>
 결과물은 학교에서 바로 쓰도록 <b>한글(hwpx)</b>과 파워포인트 파일로 만들고, 학교 엑셀 양식을 주시면 그 파일에 채웁니다.<br>
 <b>claude.ai(웹, 데스크톱 앱)와 Claude Code에서 쓸 수 있습니다.</b></p>
 
@@ -78,6 +78,7 @@
 | | `학습지:` | `worksheet` | 학습지·활동지 (학생용, 교사용 정답) | 한글 |
 | **평가** | `수행평가:` | `rubric` | 채점기준표, 학업성적관리규정 점검 | 한글 |
 | | `문항:` | `assessment-items` | 문항 출제·정답 검증, 원안지, 문항정보표 | 한글 |
+| | `교과진도:` | `course-plan` | 교과진도평가계획(학사일정으로 주별 진도표, 평가 계획, 수행평가 세부기준) | 한글 |
 | **학생부** | `세특:` | `subject-record` | 교과세특 초안, 기재요령·글자 수 점검 | 대화 |
 | | `창체:` | `activity-record` | 창체 특기사항 초안 (자율·자치·진로·동아리) | 대화 |
 | | `행특:` | `behavior-record` | 행동특성 및 종합의견 초안 | 대화 |
@@ -103,7 +104,7 @@
 | 쓰는 곳 | 방법 | 설치하는 것 |
 |---|---|---|
 | **claude.ai** (웹, 데스크톱 앱) | 스킬 zip을 올립니다 | 필요한 스킬만 골라서 |
-| **Claude Code** (터미널) | 플러그인 명령 두 줄 | 스킬 9개와 문서 만드는 도구 모두 |
+| **Claude Code** (터미널) | 플러그인 명령 두 줄 | 스킬 10개와 문서 만드는 도구 모두 |
 
 ### claude.ai (웹, 데스크톱 앱)
 
@@ -154,7 +155,7 @@ subject-record.zip   activity-record.zip   behavior-record.zip
 
 ### Claude Code (플러그인)
 
-플러그인 `teacher-kit`에는 스킬 9개와 한글(hwpx)·파워포인트 파일을 만드는 도구가 모두 들어 있습니다. 골라 설치하는 방식이 아닙니다.
+플러그인 `teacher-kit`에는 스킬 10개와 한글(hwpx)·파워포인트 파일을 만드는 도구가 모두 들어 있습니다. 골라 설치하는 방식이 아닙니다.
 
 ```text
 # 마켓플레이스 추가
@@ -242,7 +243,7 @@ claude plugin list
 | 문서 | 담긴 내용 |
 |---|---|
 | [설치와 업데이트](docs/install.md) | claude.ai와 Claude Code 설치, 새 판 올리기, 교사 프로필 만들기 |
-| [사용법](docs/usage.md) | 어떤 스킬을 쓸지, 스킬 9개 사용법, 학교 양식 쓰는 법 |
+| [사용법](docs/usage.md) | 어떤 스킬을 쓸지, 스킬 10개 사용법, 학교 양식 쓰는 법 |
 | [자주 묻는 질문](docs/faq.md) | 파일이 안 만들어질 때, 스킬이 안 불릴 때, 개인정보로 멈췄을 때 등 |
 
 <br>

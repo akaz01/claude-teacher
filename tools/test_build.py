@@ -353,6 +353,13 @@ class BuildTest(unittest.TestCase):
         self.assertIn("sample-skill/scripts/tool.py", names)
         self.assertNotIn("sample-skill/scripts/test_tool.py", names)
 
+    def test_testdata_folder_is_not_shipped(self):
+        # course-plan의 시험용 학교 양식(scripts/testdata)은 배포하지 않는다
+        write(self.root / "skills/sample-skill/scripts/testdata/form.hwpx", "시험용 양식")
+        self.assertEqual(build(self.root), [])
+        with zipfile.ZipFile(self.root / "dist/claude-ai/sample-skill.zip") as archive:
+            self.assertFalse(any("testdata" in name for name in archive.namelist()))
+
     def test_builds_plugin_folder(self):
         build(self.root)
         plugin = self.root / "dist/plugin/kit"

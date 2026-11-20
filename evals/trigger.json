@@ -2,12 +2,12 @@
   {
     "id": 1,
     "query": "2학기 진도표 짜야 하는데 주당 3시간이고 1반은 월수금, 2반은 화목금이야. 추석 연휴랑 체육대회 날 빼고 시험 범위까지 계산해 줘",
-    "expected_skill": null
+    "expected_skill": "course-plan"
   },
   {
     "id": 2,
     "query": "교과서 목차 pdf 올릴게. 이걸로 중1 국어 1학기 교수학습 및 평가 운영 계획 진도 부분 채워 줘",
-    "expected_skill": null
+    "expected_skill": "course-plan"
   },
   {
     "id": 3,
@@ -640,5 +640,20 @@
     "id": 122,
     "query": "단원 설계 스킬로 초5 국어 토의 단원 짜 줘",
     "expected_skill": "unit-design"
+  },
+  {
+    "id": 123,
+    "query": "교과진도: 고1 통합사회1 2026학년도 1학기, 4학점, 학사일정 파일 올릴게",
+    "expected_skill": "course-plan"
+  },
+  {
+    "id": 124,
+    "query": "교과진도평가계획 만들어 줘. 중2 역사 2학기 주당 3시간이고 수행평가는 두 개야",
+    "expected_skill": "course-plan"
+  },
+  {
+    "id": 125,
+    "query": "초5 국어 1학기 교수학습 및 평가 운영 계획 써 줘. 성취기준별 평가 계획까지",
+    "expected_skill": "course-plan"
   }
 ]

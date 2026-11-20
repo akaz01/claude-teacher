@@ -36,7 +36,7 @@ NAME_PATTERN = re.compile(r"^[a-z0-9]+(-[a-z0-9]+)*$")
 EXPLICIT_REF = re.compile(r"\b(references|scripts)/([A-Za-z0-9_\-./]*)")
 BARE_MD_REF = re.compile(r"`([A-Za-z0-9_\-/]+\.md)`")
 EXCLUDED_NAMES = re.compile(
-    r"^(test_.*\.py|__pycache__|.*\.pyc|\..*|.*\.(bak|tmp)|Thumbs\.db|desktop\.ini|~\$.*)$",
+    r"^(test_.*\.py|testdata|__pycache__|.*\.pyc|\..*|.*\.(bak|tmp)|Thumbs\.db|desktop\.ini|~\$.*)$",
     re.IGNORECASE)
 ZIP_DATE_TIME = (1980, 1, 1, 0, 0, 0)
 ZIP_COMPRESS_LEVEL = 6      # zlib 기본값을 적어 둔다. 파이썬·zlib 버전이 달라져도 같은 입력이면 같은 zip이 나오게 고정
@@ -55,7 +55,7 @@ _EXAM_FORM_ONLY = ("scripts/fill_exam.py", "scripts/fill_exam_parse.py", "script
 # 엑셀 양식 채우기(fill_xlsx)는 양식을 받는 네 스킬 모두에 넣는다 (test_skill_wiring 이 요구하는 정책)
 _NO_CURRICULUM = ("references/curriculum/",)  # 성취기준 데이터를 쓰지 않는 스킬
 _NO_SUBJECT_COMPETENCIES = ("references/subject-competencies.md",)  # 교과 역량 이름표: 세특·지도안만 쓴다
-_UNIT_ONLY_CURRICULUM = ("references/curriculum/teaching-assessment/",)  # 과목별 교수⋅학습 및 평가 원문(4MB): 단원 설계만 쓴다
+_UNIT_ONLY_CURRICULUM = ("references/curriculum/teaching-assessment/",)  # 과목별 교수⋅학습 및 평가 원문(4MB): 단원 설계·교과진도만 쓴다
 _LESSON_ONLY_CURRICULUM = ("references/curriculum/core-ideas/", "references/curriculum/content-elements/",
                            *_UNIT_ONLY_CURRICULUM)
 SKILL_EXCLUDES: dict[str, tuple[str, ...]] = {
@@ -69,6 +69,8 @@ SKILL_EXCLUDES: dict[str, tuple[str, ...]] = {
     "worksheet": _RECORD_ONLY + _EXAM_FORM_ONLY + _LESSON_ONLY_CURRICULUM,
     "lesson-plan": _RECORD_ONLY + _EXAM_FORM_ONLY + _UNIT_ONLY_CURRICULUM,
     "unit-design": _RECORD_ONLY + _EXAM_FORM_ONLY,
+    # 교과진도평가계획: 교수⋅학습 및 평가 원문과 핵심 아이디어는 쓰고, 내용 요소는 쓰지 않는다
+    "course-plan": _RECORD_ONLY + _EXAM_FORM_ONLY + ("references/curriculum/content-elements/",),
 }
 
 

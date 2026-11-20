@@ -167,11 +167,17 @@ class SkillBoundaryTest(unittest.TestCase):
     2026-11-20부터 단원 설계(백워드·개념기반·GRASPS)는 unit-design 스킬이 맡는다(사용자 승인)."""
 
     def test_lesson_plan_names_what_it_does_not_do(self):
+        # 2026-11-20 사용자 승인: 진도표와 교수학습 및 평가 운영 계획은 course-plan 스킬이 맡는다
         text = description("lesson-plan")
-        line = rule_line(text, "진도표", "맡지 않는다")
-        self.assertIsNotNone(line)
-        self.assertIn("교수학습 및 평가 운영 계획", line)
+        self.assertTrue(has_rule(text, "진도표", "교수학습 및 평가 운영 계획", "course-plan 스킬이 맡는다"))
         self.assertTrue(has_rule(text, "백워드", "GRASPS", "unit-design 스킬이 맡는다"))
+
+    def test_course_plan_owns_the_semester_plan_and_hands_rubrics_back(self):
+        text = description("course-plan")
+        self.assertTrue(has_rule(text, "rubric", "unit-design", "lesson-plan", "맡는다"))
+        for word in ("교과진도:", "교과진도평가계획", "학사일정", "학교 규정"):
+            self.assertIn(word, text)
+        self.assertTrue(has_rule(description("rubric"), "교과진도평가계획", "course-plan 스킬이 맡는다"))
 
     def test_rubric_leaves_task_scenario_design_out(self):
         text = description("rubric")
