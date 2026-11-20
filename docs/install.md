@@ -117,7 +117,7 @@ claude plugin install teacher-kit@claude-teacher
 
   설치된 판은 `claude plugin list`로 확인합니다.
 - **지우기**: Claude Code 안에서 `/plugin uninstall teacher-kit@claude-teacher`를 입력합니다.
-- 플러그인에는 스킬 8개가 모두 들어 있습니다. 골라 설치하는 방식이 아닙니다.
+- 플러그인에는 스킬 9개가 모두 들어 있습니다. 골라 설치하는 방식이 아닙니다.
 - Claude Code에서는 클로드 앱의 슬라이드와 디자인 기능이 없어 수업 PPT를 파이썬 생성기로 만듭니다. 이 생성기를 쓰려면 파이썬과 `python-pptx`가 필요합니다.
 
 ## 3. 처음 설정: 교사 프로필 만들기

@@ -25,12 +25,12 @@ import fill_hwpx  # noqa: E402
 from make_hwpx import build_hwpx  # noqa: E402
 
 skill_text = skill
-FORM_SKILLS = ("lesson-plan", "worksheet", "rubric", "assessment-items")
+FORM_SKILLS = ("lesson-plan", "worksheet", "rubric", "assessment-items", "unit-design")
 FORM_FILES = ("scripts/fill_hwpx.py", "scripts/fill_hwpx_parse.py", "scripts/make_hwpx.py",
               "scripts/make_hwpx_check.py", "references/form-fill.md")
 REMOVED_SKILLS = ("annual-plan", "counseling-log", "curriculum-lookup-skill", "differentiation", "meeting-minutes",
                   "official-doc", "parent-letter", "privacy-rules", "school-writing-style", "student-feedback",
-                  "unit-design", "student-record")
+                  "student-record")   # unit-design은 2026-11-05에 지웠다가 2026-11-20 사용자 요청으로 다시 만들었다
 OLD_FORM_PROMISE = re.compile(r"구성에 맞춰|구성에 맞춘다|그 양식에 맞춤")
 SKILL_MENTION = re.compile(r"`([a-z]+(?:-[a-z]+)*)` 스킬")
 MAX_PYTHON_LINES = 800

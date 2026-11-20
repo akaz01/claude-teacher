@@ -254,17 +254,17 @@
   {
     "id": 49,
     "query": "2022 개정 중1 사회 단원 백워드 설계 해 줘. 수행과제도",
-    "expected_skill": null
+    "expected_skill": "unit-design"
   },
   {
     "id": 50,
     "query": "개념기반 탐구 수업으로 이 단원 전체 설계하고 싶어. 핵심 질문부터",
-    "expected_skill": null
+    "expected_skill": "unit-design"
   },
   {
     "id": 51,
     "query": "GRASPS 수행과제 하나 설계해 줘. 고1 통합과학 기후 변화",
-    "expected_skill": null
+    "expected_skill": "unit-design"
   },
   {
     "id": 52,
@@ -625,5 +625,20 @@
     "id": 119,
     "query": "활동지: 초2 통합 가을 관찰 한 장",
     "expected_skill": "worksheet"
+  },
+  {
+    "id": 120,
+    "query": "단원: 고1 한국사1 조선 후기 단원 8차시로 설계해 줘",
+    "expected_skill": "unit-design"
+  },
+  {
+    "id": 121,
+    "query": "중2 과학 물질의 구성 단원 계획 세워 줘. 핵심 질문이랑 수행과제 포함해서",
+    "expected_skill": "unit-design"
+  },
+  {
+    "id": 122,
+    "query": "단원 설계 스킬로 초5 국어 토의 단원 짜 줘",
+    "expected_skill": "unit-design"
   }
 ]

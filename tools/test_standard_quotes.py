@@ -11,6 +11,7 @@ CURRICULUM = ROOT / "shared" / "curriculum"
 ROW = re.compile(r"^\|\s*\[([^\]]+)\]\s*\|\s*(.+?)\s*\|\s*$", re.M)
 # [코드] 뒤에 "~다."로 끝나는 문장. 코드 설명(`[4국01-02]`는 ~)처럼 백틱으로 묶은 것은 뺀다
 QUOTE = re.compile(r"(?<!`)\[(\d{1,2}[가-힣A-Za-z0-9]+\d{0,2}-\d{2}(?:-\d{2})?)\]\**\s*([^\[\]\n|\"`]{4,}?다\.)")
+TAG = re.compile(r"<[^<>\n]+>")
 SAME = str.maketrans({"⋅": "·", "∙": "·"})
 
 
@@ -39,7 +40,8 @@ def test_quoted_standards_match_the_official_text():
     assert len(standards) > 4000                       # 데이터가 통째로 빠지면 검사가 헛돌지 않게
     wrong, checked = [], 0
     for path in _documents():
-        for code, text in QUOTE.findall(path.read_text(encoding="utf-8")):
+        plain = TAG.sub("", path.read_text(encoding="utf-8"))   # HTML 예시(캔버스 코드)도 글만 남겨 대조한다
+        for code, text in QUOTE.findall(plain):
             checked += 1
             if _norm(text) not in standards.get(code, set()):
                 wrong.append(f"{path.relative_to(ROOT)}: [{code}] {text}")

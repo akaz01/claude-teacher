@@ -17,16 +17,16 @@ if str(ROOT / "tools") not in sys.path:
 
 import build  # noqa: E402
 
-TEACHING_SKILLS = ("lesson-plan", "worksheet", "class-slides", "rubric", "assessment-items")
+TEACHING_SKILLS = ("lesson-plan", "worksheet", "class-slides", "rubric", "assessment-items", "unit-design")
 RECORD_SKILLS = ("subject-record", "activity-record", "behavior-record")
 ALL_SKILLS = (*TEACHING_SKILLS, *RECORD_SKILLS)
 LESSON_SKILLS = ("lesson-plan", "worksheet", "class-slides")
-YEAR_QUESTION_SKILLS = (*LESSON_SKILLS, "assessment-items", "rubric")      # 첫 질문에 학년도 질문을 넣는 스킬
+YEAR_QUESTION_SKILLS = (*LESSON_SKILLS, "assessment-items", "rubric", "unit-design")  # 첫 질문에 학년도 질문을 넣는 스킬
 ASSESSMENT_SKILLS = ("rubric", "assessment-items")
 RESPONSIBILITY_SKILLS = (*ASSESSMENT_SKILLS, *RECORD_SKILLS)               # 첫 응답에 책임 안내를 쓰는 스킬
 # 출력 절 제목: 번호 목록의 마지막 항목이 "확인 필요"여야 한다
 OUTPUT_HEADINGS = {"lesson-plan": "## 10. 출력 순서", "worksheet": "## 7. 출력", "class-slides": "## 5. 출력",
-                   "rubric": "## 7. 출력 순서", "assessment-items": "## 7. 출력 순서"}
+                   "rubric": "## 7. 출력 순서", "assessment-items": "## 7. 출력 순서", "unit-design": "## 9. 출력 순서"}
 
 # 사용자가 승인한 교사 안내 문구. 문장 그대로 시험한다 (바꾸려면 사용자 승인이 먼저다)
 APPROVED = {

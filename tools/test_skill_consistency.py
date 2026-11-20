@@ -163,17 +163,25 @@ class WorksheetDefaultsTest(unittest.TestCase):
 
 
 class SkillBoundaryTest(unittest.TestCase):
-    """스킬 고르기 평가: 진도표·단원 설계를 지도안이, 수행과제 설계를 루브릭이 가져갔다."""
+    """스킬 고르기 평가: 진도표·단원 설계를 지도안이, 수행과제 설계를 루브릭이 가져갔다.
+    2026-11-20부터 단원 설계(백워드·개념기반·GRASPS)는 unit-design 스킬이 맡는다(사용자 승인)."""
 
     def test_lesson_plan_names_what_it_does_not_do(self):
         text = description("lesson-plan")
-        line = rule_line(text, "진도표", "백워드", "GRASPS", "맡지 않는다")
+        line = rule_line(text, "진도표", "맡지 않는다")
         self.assertIsNotNone(line)
         self.assertIn("교수학습 및 평가 운영 계획", line)
+        self.assertTrue(has_rule(text, "백워드", "GRASPS", "unit-design 스킬이 맡는다"))
 
     def test_rubric_leaves_task_scenario_design_out(self):
         text = description("rubric")
-        self.assertTrue(has_rule(text, "채점 기준", "GRASPS", "맡지 않는다"))
+        self.assertTrue(has_rule(text, "채점 기준", "GRASPS", "unit-design 스킬이 맡는다"))
+
+    def test_unit_design_hands_single_lessons_and_rubrics_back(self):
+        text = description("unit-design")
+        self.assertTrue(has_rule(text, "lesson-plan", "rubric", "맡는다"))
+        for word in ("백워드", "GRASPS", "단원:"):
+            self.assertIn(word, text)
 
     def test_no_skill_makes_student_checklists(self):
         # 사용자 지시(2026-11-17): 학생용 체크리스트와 채점 기록표는 아예 만들지 않는다

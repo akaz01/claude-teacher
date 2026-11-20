@@ -55,7 +55,9 @@ _EXAM_FORM_ONLY = ("scripts/fill_exam.py", "scripts/fill_exam_parse.py", "script
 # 엑셀 양식 채우기(fill_xlsx)는 양식을 받는 네 스킬 모두에 넣는다 (test_skill_wiring 이 요구하는 정책)
 _NO_CURRICULUM = ("references/curriculum/",)  # 성취기준 데이터를 쓰지 않는 스킬
 _NO_SUBJECT_COMPETENCIES = ("references/subject-competencies.md",)  # 교과 역량 이름표: 세특·지도안만 쓴다
-_LESSON_ONLY_CURRICULUM = ("references/curriculum/core-ideas/", "references/curriculum/content-elements/")
+_UNIT_ONLY_CURRICULUM = ("references/curriculum/teaching-assessment/",)  # 과목별 교수⋅학습 및 평가 원문(4MB): 단원 설계만 쓴다
+_LESSON_ONLY_CURRICULUM = ("references/curriculum/core-ideas/", "references/curriculum/content-elements/",
+                           *_UNIT_ONLY_CURRICULUM)
 SKILL_EXCLUDES: dict[str, tuple[str, ...]] = {
     "activity-record": _NO_CURRICULUM,
     # 행특·창체만 쓰므로 교과 역량 이름표는 필요 없다. curriculum-transition.md는 교사 프로필의 학년도·교육과정 판별(2절)에 쓰므로 둔다
@@ -65,7 +67,8 @@ SKILL_EXCLUDES: dict[str, tuple[str, ...]] = {
     "class-slides": _RECORD_ONLY + _LESSON_ONLY_CURRICULUM,
     "rubric": _RECORD_ONLY + _EXAM_FORM_ONLY + _LESSON_ONLY_CURRICULUM,
     "worksheet": _RECORD_ONLY + _EXAM_FORM_ONLY + _LESSON_ONLY_CURRICULUM,
-    "lesson-plan": _RECORD_ONLY + _EXAM_FORM_ONLY,
+    "lesson-plan": _RECORD_ONLY + _EXAM_FORM_ONLY + _UNIT_ONLY_CURRICULUM,
+    "unit-design": _RECORD_ONLY + _EXAM_FORM_ONLY,
 }
 
 

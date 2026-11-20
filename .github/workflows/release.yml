@@ -2,7 +2,7 @@ name: release
 
 # 버전 태그(예: v0.4.0)를 올리면 실행된다.
 # 1) 태그와 plugin.json 버전이 같은지 보고, 시험과 빌드를 돌린다
-# 2) claude.ai용 스킬 zip 8개와 플러그인 zip을 GitHub 릴리스에 올린다
+# 2) claude.ai용 스킬 zip 9개와 플러그인 zip을 GitHub 릴리스에 올린다
 # 3) 빌드된 플러그인을 plugin 가지에 새 커밋으로 올린다
 #    (.claude-plugin/marketplace.json이 이 가지를 가리킨다. 기록을 지우지 않고 쌓는다)
 on:
