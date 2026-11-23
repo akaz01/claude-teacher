@@ -290,6 +290,22 @@ claude plugin list
 
 ## 업데이트 소식
 
+### 0.6.1 (2026-11-24) — 영어 선지 겹침 수정, `생기부:`로 부르기
+
+- **영어 선지가 다음 선지와 겹치던 문제를 고쳤습니다.** 한글에서는 영문이 어림보다 넓게 찍혀, 두 줄이 되는 영어 선지가 한 줄 높이를 받는 일이 있었습니다. 이제 영문이 많은 선지는 줄 수를 넉넉히 셉니다. (`assessment-items`)
+- **`생기부:`로 시작해도 됩니다.** `학생부:`와 똑같이 세특, 창체, 행특 중 맞는 스킬이 받고, 어느 항목인지 드러나지 않으면 먼저 여쭤봅니다. (`subject-record`, `activity-record`, `behavior-record`)
+
+#### 0.6.1로 업데이트하는 법
+
+**claude.ai:** [릴리스 페이지](https://github.com/akaz01/claude-teacher/releases/latest)에서 `assessment-items.zip`, `subject-record.zip`, `activity-record.zip`, `behavior-record.zip` 4개를 받아 같은 이름으로 올리고 교체합니다. 나머지 스킬은 다시 올리지 않아도 됩니다.
+
+**Claude Code:** 터미널에서 입력하고 다시 시작합니다.
+
+```bash
+claude plugin marketplace update claude-teacher
+claude plugin update teacher-kit@claude-teacher
+```
+
 ### 0.6.0 (2026-11-21) — 단원 설계(`unit-design`)와 교과진도평가계획(`course-plan`)
 
 - **새 스킬: 단원 설계** (`단원:`)
