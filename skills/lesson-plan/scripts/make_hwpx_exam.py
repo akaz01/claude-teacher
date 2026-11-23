@@ -87,9 +87,20 @@ def _text_width(text: str) -> float:
     return _word_width(_plain(text), EM)
 
 
+LATIN_WRAP_MARGIN = 0.12                # 영문은 한글 화면에서 0.5em 어림보다 넓다. 줄 수를 셀 때만 더한다
+
+
+def _wrap_width(text: str) -> float:
+    """줄 수를 셀 폭. 영문 글자 비중만큼 여유를 더해, 두 줄이 될 선지를 한 줄로 어림하지 않게 한다."""
+    plain = _plain(text)
+    latin = sum(1 for char in plain if char.isascii() and char.isalpha())
+    ratio = latin / len(plain) if plain else 0.0
+    return _text_width(text) * (1 + LATIN_WRAP_MARGIN * ratio)
+
+
 def _lines_needed(text: str, first: int, rest: int) -> int:
     """글이 몇 줄이 될지 어림한다. first는 첫 줄 가용 폭, rest는 둘째 줄부터의 폭."""
-    width = _text_width(text)
+    width = _wrap_width(text)
     if width <= first:
         return 1
     return 1 + math.ceil((width - first) / max(rest, EM))
@@ -193,7 +204,7 @@ def _warn_overflow(writer, layout: str, cols: int, column: int, texts: list[str]
     if cols == 1 or layout == "auto":
         return
     inner = column - CHOICE_HANG - CHOICE_PAD_RIGHT
-    long = [text for text in texts if _text_width(text) > inner + CHOICE_HANG - CHOICE_PAD_RIGHT]
+    long = [text for text in texts if _wrap_width(text) > inner + CHOICE_HANG - CHOICE_PAD_RIGHT]
     if long:
         writer.warnings.append(f"선지 {len(long)}개가 칸보다 길어 두 줄이 됩니다. layout을 더 넓은 배치(2x3 또는 5x1)로 바꿔 주세요")
 
