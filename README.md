@@ -11,7 +11,7 @@
 ![output](https://img.shields.io/badge/output-hwpx%20%C2%B7%20pptx-1f6feb)
 ![works with](https://img.shields.io/badge/%EC%82%AC%EC%9A%A9-claude.ai%20%C2%B7%20Claude%20Code-d97757)
 
-**스킬 10개** | 수업 · 평가 · 학생부 | 한글(hwpx) · PPT | 성취기준 4,451개 | claude.ai · Claude Code
+**스킬 10개** | 수업 · 평가 · 생기부 | 한글(hwpx) · PPT | 성취기준 4,451개 | claude.ai · Claude Code
 
 </div>
 
@@ -32,7 +32,7 @@
 
 <br>
 
-<p align="center"><b>지도안, 학습지, 수업 PPT, 시험지, 학생부 초안을 학교 양식에 바로 쓰도록 만듭니다.</b></p>
+<p align="center"><b>지도안, 학습지, 수업 PPT, 시험지, 생기부 초안을 학교 양식에 바로 쓰도록 만듭니다.</b></p>
 
 <p align="center">초·중·고 교사의 수업·평가·학교생활기록부 업무를 돕는 Claude 스킬 10개입니다.<br>
 결과물은 학교에서 바로 쓰도록 <b>한글(hwpx)</b>과 파워포인트 파일로 만들고, 학교 엑셀 양식을 주시면 그 파일에 채웁니다.<br>
@@ -55,7 +55,7 @@
 ## 1년 사용 흐름
 
 <p align="center">
-  <img src="docs/images/year-flow.svg" alt="1년 사용 흐름: 단원 설계 → 채점기준표 → 교과진도평가계획 → 수업 자료 → 시험 문항 → 학생부" width="100%">
+  <img src="docs/images/year-flow.svg" alt="1년 사용 흐름: 단원 설계 → 채점기준표 → 교과진도평가계획 → 수업 자료 → 시험 문항 → 생기부" width="100%">
 </p>
 
 <table>
@@ -69,8 +69,8 @@
 <tr><td nowrap align="center"><b>7월</b></td><td nowrap>1학기 기록,<br>2학기 준비</td><td><kbd>세특:</kbd> <kbd>창체:</kbd>, <kbd>단원:</kbd> 2학기 단원</td><td>세특·창체 초안</td></tr>
 <tr><td nowrap align="center"><b>8월</b></td><td nowrap>2학기 평가계획</td><td><kbd>수행평가:</kbd> → <kbd>교과진도:</kbd> 2학기 계획</td><td>2학기 교과진도평가계획</td></tr>
 <tr><td nowrap align="center"><b>9~10월</b></td><td nowrap>수업,<br>1회 정기시험</td><td><kbd>지도안:</kbd> <kbd>PPT:</kbd> <kbd>학습지:</kbd>, <kbd>문항:</kbd></td><td>차시 자료, 시험지</td></tr>
-<tr><td nowrap align="center"><b>11~12월</b></td><td nowrap>2회 정기시험,<br>학년말 기록</td><td><kbd>문항:</kbd>, <kbd>세특:</kbd> <kbd>창체:</kbd>, 담임은 <kbd>행특:</kbd></td><td>학생부 초안</td></tr>
-<tr><td nowrap align="center"><b>1~2월</b></td><td nowrap>학생부 마감,<br>다음 해 준비</td><td><kbd>세특:</kbd> <kbd>창체:</kbd> <kbd>행특:</kbd> 글자 수(NEIS 바이트) 점검</td><td>마감본</td></tr>
+<tr><td nowrap align="center"><b>11~12월</b></td><td nowrap>2회 정기시험,<br>학년말 기록</td><td><kbd>문항:</kbd>, <kbd>세특:</kbd> <kbd>창체:</kbd>, 담임은 <kbd>행특:</kbd></td><td>생기부 초안</td></tr>
+<tr><td nowrap align="center"><b>1~2월</b></td><td nowrap>생기부 마감,<br>다음 해 준비</td><td><kbd>세특:</kbd> <kbd>창체:</kbd> <kbd>행특:</kbd> 글자 수(NEIS 바이트) 점검</td><td>마감본</td></tr>
 </tbody>
 </table>
 
@@ -111,7 +111,7 @@
 <tr><td rowspan="3" nowrap align="center"><b>평가</b></td><td nowrap align="center"><kbd>수행평가:</kbd></td><td nowrap><kbd>rubric</kbd></td><td>채점기준표, 학업성적관리규정 점검</td><td nowrap align="center">한글</td></tr>
 <tr><td nowrap align="center"><kbd>문항:</kbd></td><td nowrap><kbd>assessment-items</kbd></td><td>문항 출제·정답 검증, 원안지, 문항정보표</td><td nowrap align="center">한글</td></tr>
 <tr><td nowrap align="center"><kbd>교과진도:</kbd></td><td nowrap><kbd>course-plan</kbd></td><td>교과진도평가계획(학사일정으로 주별 진도표, 평가 계획, 수행평가 세부기준)</td><td nowrap align="center">한글</td></tr>
-<tr><td rowspan="3" nowrap align="center"><b>학생부</b></td><td nowrap align="center"><kbd>세특:</kbd></td><td nowrap><kbd>subject-record</kbd></td><td>교과세특 초안, 기재요령·글자 수 점검</td><td nowrap align="center">대화</td></tr>
+<tr><td rowspan="3" nowrap align="center"><b>생기부</b></td><td nowrap align="center"><kbd>세특:</kbd></td><td nowrap><kbd>subject-record</kbd></td><td>교과세특 초안, 기재요령·글자 수 점검</td><td nowrap align="center">대화</td></tr>
 <tr><td nowrap align="center"><kbd>창체:</kbd></td><td nowrap><kbd>activity-record</kbd></td><td>창체 특기사항 초안 (자율·자치·진로·동아리)</td><td nowrap align="center">대화</td></tr>
 <tr><td nowrap align="center"><kbd>행특:</kbd></td><td nowrap><kbd>behavior-record</kbd></td><td>행동특성 및 종합의견 초안</td><td nowrap align="center">대화</td></tr>
 </tbody>
@@ -121,7 +121,7 @@
 > - **시험 문항**은 정답을 직접 풀어 검증하고, 원안지·학생용 문제지, 정답 및 채점기준, 문항정보표를 함께 냅니다.
 > - **교과세특**은 초등이면 성취수준 및 특기사항으로 씁니다.
 > - **수업 PPT**는 claude.ai에서 모든 선생님께 같은 디자인의 앱 슬라이드로, 앱 기능이 없으면 교과별 색의 파워포인트로 만듭니다. 테마는 묻지 않고 교과에 맞게 고릅니다. 원하시면 말씀해 주세요.
-> - **학생부**: 창체의 자율·자치·진로는 담임교사, 동아리는 동아리 담당교사가 씁니다. 봉사활동은 쓰지 않습니다. 개인정보 지우는 법 안내와 나이스에 옮기기 전 점검(NEIS 바이트)도 합니다.
+> - **생기부**: 창체의 자율·자치·진로는 담임교사, 동아리는 동아리 담당교사가 씁니다. 봉사활동은 쓰지 않습니다. 개인정보 지우는 법 안내와 나이스에 옮기기 전 점검(NEIS 바이트)도 합니다.
 
 <br>
 
@@ -268,7 +268,7 @@ claude plugin list
 | 교과세특 | `세특: 고1 통합과학` |
 | 창체(자율·동아리·진로) | `창체: 고2 자율활동` |
 | 행동특성 및 종합의견 | `행특: 중3` |
-| 학생부(세특·창체·행특 중 무엇인지 모를 때) | `학생부: ...` (세특·창체·행특 중 무엇인지 먼저 여쭤봅니다) |
+| 생기부(세특·창체·행특 중 무엇인지 모를 때) | `학생부: ...` (세특·창체·행특 중 무엇인지 먼저 여쭤봅니다) |
 
 > 질문 없이 바로 만들어 달라고 하시면 기본값으로 만들고, 쓴 값은 답변 맨 위에 알려 드립니다.
 
