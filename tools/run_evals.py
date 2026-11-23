@@ -757,6 +757,7 @@ def main(argv: list[str] | None = None, executor: Executor = run_claude) -> int:
         if reconfigure is not None:
             reconfigure(encoding="utf-8")
     args = parse_args(argv)
+    args.plugin_dir = args.plugin_dir.resolve()  # claude는 임시 작업 폴더에서 돈다. 상대 경로면 플러그인을 못 찾는다
     if args.validate:
         problems = validate_evals(args.evals_dir, installed_skills())
         print("\n".join(problems) if problems else f"형식 검사 통과: {args.evals_dir}")

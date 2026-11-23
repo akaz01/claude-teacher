@@ -212,6 +212,26 @@ def test_main_end_to_end_writes_reports(tmp_path):
     assert "rubric" in (out / "summary.md").read_text(encoding="utf-8")
 
 
+def test_main_resolves_relative_plugin_dir(tmp_path, monkeypatch):
+    # claude는 임시 작업 폴더에서 돈다. 상대 경로를 그대로 넘기면 플러그인을 못 찾아 모든 질의가 '놓침'이 된다
+    evals = tmp_path / "evals"
+    evals.mkdir()
+    (evals / "trigger.json").write_text(json.dumps([{"id": 1, "query": "q", "expected_skill": "rubric"}]),
+                                        encoding="utf-8")
+    (tmp_path / "plugin" / "skills").mkdir(parents=True)
+    monkeypatch.chdir(tmp_path)
+    seen = []
+
+    def fake(req):
+        seen.append(req.plugin_dir)
+        return ok(skills=("teacher-kit:rubric",))
+
+    code = ev.main(["--mode", "trigger", "--evals-dir", str(evals), "--plugin-dir", "plugin",
+                    "--results-dir", str(tmp_path / "res")], executor=fake)
+    assert code == 0
+    assert seen == [(tmp_path / "plugin").resolve()]
+
+
 @pytest.mark.parametrize("value,expected", [(0.5, "50.0%"), (1, "100.0%")])
 def test_pct(value, expected):
     assert ev.pct(value) == expected
