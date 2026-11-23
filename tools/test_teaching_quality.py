@@ -152,11 +152,12 @@ class ReadmeTest(unittest.TestCase):
         self.assertNotIn("테마 5종", readme)
 
     def test_record_call_row(self):
-        row = next(line for line in read("README.md").splitlines() if line.startswith("| 학생부("))
-        for word in ("학생부(세특·창체·행특 중 무엇인지 모를 때)", "`학생부: ...`", "먼저 여쭤봅니다"):
+        row = next(line for line in read("README.md").splitlines() if line.startswith("| 생기부("))
+        for word in ("생기부(세특·창체·행특 중 무엇인지 모를 때)", "`생기부: ...`", "먼저 여쭤봅니다"):
             self.assertIn(word, row)
         for name in RECORD_SKILLS:
             self.assertIn("\"학생부:\"", description(name), name)
+            self.assertIn("\"생기부:\"", description(name), name)
 
 
 class PersonalRecordTest(unittest.TestCase):

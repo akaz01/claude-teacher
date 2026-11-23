@@ -655,5 +655,19 @@
     "id": 125,
     "query": "초5 국어 1학기 교수학습 및 평가 운영 계획 써 줘. 성취기준별 평가 계획까지",
     "expected_skill": "course-plan"
+  },
+  {
+    "id": 126,
+    "query": "생기부: 중2 국어 세특 초안 부탁해. 발표 활동 메모 붙일게",
+    "expected_skill": "subject-record"
+  },
+  {
+    "id": 127,
+    "query": "생기부: 학생B 기록 초안 써 줘",
+    "expected_skill": [
+      "subject-record",
+      "activity-record",
+      "behavior-record"
+    ]
   }
 ]

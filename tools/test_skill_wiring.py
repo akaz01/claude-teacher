@@ -341,7 +341,7 @@ class RecordSkillSplitTest(unittest.TestCase):
             description = build.parse_frontmatter(skill(name))["description"]
             self.assertTrue(has_rule(description, "항목이 분명하지 않으면", "먼저 항목을 묻는다"), name)
             self.assertTrue(has_rule(description, "개인정보 지우기", "가명 처리", "세 학생부 스킬이 모두"), name)
-            self.assertNotIn("생기부", description, name)
+            self.assertNotIn("생기부", description.replace('"생기부:"', ""), name)  # 설명 글은 정식 이름, 부르는 말만 허용
 
     def test_every_record_skill_keeps_the_common_rules(self):
         for name in RECORD_SKILLS:
@@ -354,7 +354,7 @@ class RecordSkillSplitTest(unittest.TestCase):
     def test_call_names_are_in_each_description(self):
         for name, calls in self.CALLS.items():
             description = build.parse_frontmatter(skill(name))["description"]
-            for call in (*calls, "학생부:"):
+            for call in (*calls, "학생부:", "생기부:"):
                 with self.subTest(skill=name, call=call):
                     self.assertIn(f'"{call}"', description)
 
