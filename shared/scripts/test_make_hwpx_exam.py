@@ -7,7 +7,7 @@ import zipfile
 from pathlib import Path
 
 from make_hwpx import build_hwpx, validate_package
-from make_hwpx_exam import CHOICE_HANG, STEM_HANG
+from make_hwpx_exam import CHOICE_HANG, LINE_HEIGHT, STEM_HANG
 
 PARA_ID = r'<hp:p id="[1-9]\d*" paraPrIDRef="(\d+)"'
 
@@ -96,6 +96,15 @@ class ChoicesTest(unittest.TestCase):
         ids = set(re.findall(PARA_ID, section))
         self.assertTrue(any(f'<hc:intent value="-{CHOICE_HANG}"' in para_pr(header, i)
                             and '<hc:left value="0"' in para_pr(header, i) for i in ids))
+
+    def test_long_english_choice_gets_two_line_height(self):
+        # 한글 화면에서 영문 선지는 0.5em 어림보다 넓어, 두 줄이 되는 선지가 한 줄 높이를 받으면 다음 선지와 겹친다
+        items = ["Thomas has ridden bikes for about ten years.", "The Wind Power uses sunlight to make power.",
+                 "Thomas made the charger with a big battery.", "Ted doesn't want to use the Wind Power.",
+                 "The fan makes Thomas's phone run out of battery."]
+        heights = [int(h) for h in re.findall(r'<hp:cellSz width="\d+" height="(\d+)"', choices(items, "5x1")[0])]
+        self.assertEqual(heights[0], 2 * LINE_HEIGHT)
+        self.assertEqual(heights[3], LINE_HEIGHT)
 
     def test_marker_added_and_glued_but_existing_marker_kept(self):
         section = choices(["가", "② 나"], "5x1")[0]
